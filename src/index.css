@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-grotesk: 'Space Grotesk', sans-serif;
+    --font-manrope: 'Manrope', sans-serif;
+    --font-serif-luxury: 'Cormorant Garamond', Georgia, serif;
+    --font-handwriting: 'Caveat', cursive;
+  }
+
+  body {
+    font-family: var(--font-manrope);
+    background-color: #05070F;
+    color: #F3F4F6;
+  }
+
+  h1, h2, h3, .font-serif-headline {
+    font-family: var(--font-serif-luxury);
+  }
+
+  .font-grotesk {
+    font-family: var(--font-grotesk);
+  }
+
+  .font-handwriting {
+    font-family: var(--font-handwriting);
+  }
+}
+
+/* Custom Utilities for Aurora Design */
+.bg-parchment {
+  background-color: #F7F4EE;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(240, 235, 224, 0.8) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(235, 228, 215, 0.6) 0px, transparent 50%);
+}
+
+.parchment-card {
+  background: rgba(255, 253, 249, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(220, 212, 195, 0.6);
+  box-shadow: 0 10px 30px -10px rgba(70, 50, 20, 0.08);
+}
+
+.glass-phone {
+  background: linear-gradient(135deg, rgba(20, 24, 38, 0.95) 0%, rgba(10, 13, 22, 0.98) 100%);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.15),
+    0 20px 50px -10px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(138, 92, 245, 0.2);
+}
+
+.phone-border {
+  border: 3px solid #23283B;
+  border-radius: 44px;
+}
+
+.text-gradient-lime {
+  background: linear-gradient(135deg, #E2FF54 0%, #C4EE1B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-cosmic {
+  background: linear-gradient(135deg, #FFFFFF 30%, #C4B5FD 70%, #818CF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-btn-lime {
+  background: #D4F933;
+  color: #0A0D18;
+  box-shadow: 0 0 25px rgba(212, 249, 51, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glow-btn-lime:hover {
+  background: #E0FF4F;
+  box-shadow: 0 0 35px rgba(212, 249, 51, 0.65);
+  transform: translateY(-2px);
+}
+
+.dark-pill-btn {
+  background: rgba(15, 20, 32, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+
+.dark-pill-btn:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(25, 32, 50, 0.9);
+  transform: translateY(-2px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #05070F;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F293D;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}

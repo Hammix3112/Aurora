@@ -1,0 +1,123 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Utensils, Footprints, Check } from 'lucide-react';
+import PhoneMockup from './PhoneMockup';
+import ChatScreen from './PhoneScreens/ChatScreen';
+
+export default function AskDataSection() {
+  return (
+    <section class="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+        
+        {/* Left Column Text Content */}
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          class="lg:col-span-5 space-y-6"
+        >
+          {/* Eyebrow */}
+          <p class="text-xs font-semibold tracking-[0.2em] text-purple-700 uppercase font-grotesk">
+            ASK YOUR OWN DATA
+          </p>
+
+          {/* Main Headline */}
+          <h2 class="text-4xl sm:text-6xl font-serif leading-[1.08] text-slate-900 tracking-tight">
+            Talk to your<br />
+            health like you<br />
+            talk to a person<span class="text-purple-600 font-sans">.</span>
+          </h2>
+
+          {/* Subtitle */}
+          <p class="text-slate-600 text-sm sm:text-base font-light leading-relaxed max-w-sm">
+            Ask about a workout. Correct a meal. Understand a change. Aurora answers from the context you have built.
+          </p>
+        </motion.div>
+
+        {/* Center Column - 2 Context Prompt Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          class="lg:col-span-3 space-y-16 select-none relative"
+        >
+          {/* Top Context Card: Actually, that was two servings */}
+          <div class="bg-white/85 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-600 shrink-0 mt-0.5">
+                  <Utensils class="w-3.5 h-3.5" />
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-900 leading-snug">
+                    Actually, that was two servings.
+                  </p>
+                  <span class="text-[9.5px] text-slate-500 font-mono">Lunch · 12:41 PM</span>
+                </div>
+              </div>
+
+              {/* Meal thumbnail with check badge */}
+              <div class="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-amber-200 shrink-0">
+                <img
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+                  alt="Meal serving"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-teal-500 text-white flex items-center justify-center text-[7px] font-bold">
+                  <Check class="w-2 h-2" />
+                </div>
+              </div>
+            </div>
+
+            {/* Line to Phone */}
+            <svg class="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible">
+              <path d="M0,20 Q40,20 80,0" fill="none" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="3 3" />
+            </svg>
+          </div>
+
+          {/* Bottom Context Card: How did yesterday's workout affect today? */}
+          <div class="bg-white/85 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group">
+            <div class="flex items-start gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-600 shrink-0 mt-0.5">
+                <Footprints class="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-900 leading-snug">
+                  How did yesterday's workout affect today?
+                </p>
+                <span class="text-[9.5px] text-slate-500 font-mono">11:32 AM</span>
+              </div>
+            </div>
+
+            {/* Line to Phone */}
+            <svg class="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible">
+              <path d="M0,20 Q40,20 80,40" fill="none" stroke="#38BDF8" stroke-width="1.5" />
+            </svg>
+          </div>
+        </motion.div>
+
+        {/* Right Column - Phone Mockup displaying ChatScreen */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          class="lg:col-span-4 flex justify-center lg:justify-end"
+        >
+          <PhoneMockup time="03:18" battery="77%">
+            <ChatScreen />
+          </PhoneMockup>
+        </motion.div>
+      </div>
+
+      {/* Bottom Wavy Curve Transition to Deep Space Section */}
+      <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
+        <svg class="relative block w-full h-16 text-[#04060E]" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+        </svg>
+      </div>
+    </section>
+  );
+}
