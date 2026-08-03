@@ -20,19 +20,25 @@ export default function ResetPortalCanvas({ activeTab = 'Unwind' }) {
 
     if (canvas) observer.observe(canvas);
 
-    let width = (canvas.width = canvas.parentElement.offsetWidth);
-    let height = (canvas.height = canvas.parentElement.offsetHeight);
+    let width = (canvas.width = canvas.parentElement?.offsetWidth || window.innerWidth);
+    let height = (canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight);
 
     const handleResize = () => {
       if (!canvas || !canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.offsetWidth;
-      height = canvas.height = canvas.parentElement.offsetHeight;
+      const newW = canvas.parentElement.offsetWidth;
+      const newH = canvas.parentElement.offsetHeight;
+
+      // Filter out minor address-bar height shifts on mobile scroll
+      if (Math.abs(newW - width) > 10 || Math.abs(newH - height) > 80) {
+        width = canvas.width = newW;
+        height = canvas.height = newH;
+      }
     };
 
     window.addEventListener('resize', handleResize);
 
     const sparkles = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 45; i++) {
       sparkles.push({
         x: Math.random() * width,
         y: Math.random() * height,

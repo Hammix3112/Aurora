@@ -20,19 +20,25 @@ export default function ParticleCanvas({ variant = 'hero' }) {
 
     if (canvas) observer.observe(canvas);
 
-    let width = (canvas.width = canvas.parentElement.offsetWidth);
-    let height = (canvas.height = canvas.parentElement.offsetHeight);
+    let width = (canvas.width = canvas.parentElement?.offsetWidth || window.innerWidth);
+    let height = (canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight);
 
     const handleResize = () => {
       if (!canvas || !canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.offsetWidth;
-      height = canvas.height = canvas.parentElement.offsetHeight;
+      const newW = canvas.parentElement.offsetWidth;
+      const newH = canvas.parentElement.offsetHeight;
+
+      // Only update canvas dimensions if there is a significant width or height change (prevents flickering on mobile scroll address-bar toggle)
+      if (Math.abs(newW - width) > 10 || Math.abs(newH - height) > 80) {
+        width = canvas.width = newW;
+        height = canvas.height = newH;
+      }
     };
 
     window.addEventListener('resize', handleResize);
 
     const particles = [];
-    const particleCount = variant === 'hero' ? 80 : 50;
+    const particleCount = variant === 'hero' ? 70 : 45;
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
