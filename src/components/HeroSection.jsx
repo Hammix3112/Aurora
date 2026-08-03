@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Navbar from './Navbar';
 import HeroSignalNodes from './HeroSignalNodes';
@@ -8,26 +8,39 @@ import TodayCalorieScreen from './PhoneScreens/TodayCalorieScreen';
 import ParticleCanvas from './ParticleCanvas';
 
 export default function HeroSection() {
-  return (
-    <section class="relative w-full min-h-screen bg-[#050711] overflow-hidden flex flex-col justify-between pt-2 pb-16">
-      {/* Dynamic Glowing Energy Ribbon Particle Background */}
-      <ParticleCanvas variant="hero" />
+  const { scrollYProgress } = useScroll();
 
-      {/* Radiant Cosmic Glowing Orbs */}
-      <div class="absolute left-1/4 top-1/3 w-[500px] h-[500px] bg-gradient-to-tr from-purple-900/25 via-indigo-800/20 to-transparent rounded-full blur-[120px] pointer-events-none"></div>
-      <div class="absolute right-0 top-10 w-[700px] h-[700px] bg-gradient-to-bl from-cyan-500/25 via-teal-500/15 to-purple-900/20 rounded-full blur-[140px] pointer-events-none"></div>
+  // Parallax depth layers: different speeds for different depth planes
+  const bgY = useTransform(scrollYProgress, [0, 0.3], [0, 80]);
+  const midY = useTransform(scrollYProgress, [0, 0.3], [0, 40]);
+  const fgY = useTransform(scrollYProgress, [0, 0.3], [0, -20]);
+  const phoneY = useTransform(scrollYProgress, [0, 0.3], [0, -35]);
+
+  return (
+    <section class="relative w-full min-h-screen bg-[#050711] overflow-hidden flex flex-col justify-between pt-2 pb-16" style={{ perspective: '1200px' }}>
+      {/* Background Energetic Cyan/Purple Canvas - Same as Workout Intelligence */}
+      <motion.div class="absolute inset-0 z-0 pointer-events-none" style={{ y: bgY }}>
+        <ParticleCanvas variant="health" />
+      </motion.div>
+
+      {/* Radiant Volumetric Cosmic Glowing Orbs - Mid Parallax Layer */}
+      <motion.div class="absolute inset-0 pointer-events-none z-[1]" style={{ y: midY }}>
+        <div class="absolute left-1/4 top-1/3 w-[550px] h-[550px] bg-gradient-to-tr from-purple-900/30 via-indigo-800/20 to-transparent rounded-full blur-[130px]"></div>
+        <div class="absolute right-0 top-10 w-[750px] h-[750px] bg-gradient-to-bl from-cyan-500/15 via-teal-500/10 to-purple-900/15 rounded-full blur-[150px]"></div>
+      </motion.div>
 
       {/* Top Navbar Header */}
       <Navbar />
 
       {/* Hero Content Grid (Left Text | Center Signal Nodes | Right Phone Mockup) */}
-      <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto pt-4">
+      <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto pt-4" style={{ transformStyle: 'preserve-3d' }}>
         
-        {/* Left Column - Headline & CTAs */}
+        {/* Left Column - Headline & CTAs — Foreground Parallax Layer */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
+          style={{ y: fgY, transformStyle: 'preserve-3d' }}
           class="lg:col-span-5 space-y-6"
         >
           {/* Eyebrow */}
@@ -63,18 +76,22 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Middle Column - Floating Signal Node Widgets */}
-        <div class="lg:col-span-3 flex justify-center lg:justify-start">
+        {/* Middle Column - Floating Signal Node Widgets — Mid Parallax Layer */}
+        <motion.div class="lg:col-span-3 flex justify-center lg:justify-start" style={{ y: midY }}>
           <HeroSignalNodes />
-        </div>
+        </motion.div>
 
-        {/* Right Column - Phone Mockup */}
+        {/* Right Column - Phone Mockup — Foreground Parallax Layer */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-          class="lg:col-span-4 flex justify-center lg:justify-end"
+          style={{ y: phoneY, transformStyle: 'preserve-3d' }}
+          class="lg:col-span-4 flex justify-center lg:justify-end relative"
         >
+          {/* Subtle Backing Energy Halo for Cinematic Volumetric Effect */}
+          <div class="absolute -inset-6 bg-gradient-to-tr from-cyan-500/20 via-purple-500/20 to-teal-400/20 rounded-[60px] blur-3xl pointer-events-none"></div>
+
           <PhoneMockup time="02:14" battery="76%">
             <TodayCalorieScreen />
           </PhoneMockup>

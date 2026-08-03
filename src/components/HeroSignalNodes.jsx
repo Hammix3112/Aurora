@@ -4,7 +4,7 @@ import { Utensils, Moon, Heart, Dumbbell } from 'lucide-react';
 
 export default function HeroSignalNodes() {
   return (
-    <div class="relative w-full max-w-[280px] space-y-6 select-none">
+    <div class="relative w-full max-w-[280px] space-y-6 select-none" style={{ perspective: '800px', transformStyle: 'preserve-3d' }}>
       {/* Node 1: MEAL LOGGED */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -12,7 +12,7 @@ export default function HeroSignalNodes() {
         transition={{ duration: 0.6, delay: 0.3 }}
         class="flex items-center gap-3 relative group"
       >
-        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-purple-500/30 p-1 shadow-lg shadow-purple-950/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform backdrop-blur-md">
+        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-purple-500/30 p-1 shadow-xl shadow-purple-950/60 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform backdrop-blur-md" style={{ transform: 'translateZ(20px)' }}>
           <div class="w-full h-full rounded-xl bg-gradient-to-tr from-amber-600 via-orange-500 to-purple-600 flex items-center justify-center text-white">
             <Utensils class="w-6 h-6" />
           </div>
@@ -51,8 +51,7 @@ export default function HeroSignalNodes() {
         transition={{ duration: 0.6, delay: 0.4 }}
         class="flex items-center gap-3 relative group"
       >
-        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-purple-500/30 p-2 shadow-lg shadow-purple-950/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform backdrop-blur-md">
-          {/* Waveform Bar Chart Icon */}
+        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-purple-500/30 p-2 shadow-xl shadow-purple-950/60 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform backdrop-blur-md" style={{ transform: 'translateZ(20px)' }}>
           <div class="w-full h-full flex items-end justify-center gap-0.5 pb-1">
             <div class="w-1 h-3 bg-purple-500 rounded-sm"></div>
             <div class="w-1 h-6 bg-purple-400 rounded-sm"></div>
@@ -93,7 +92,7 @@ export default function HeroSignalNodes() {
         transition={{ duration: 0.6, delay: 0.5 }}
         class="flex items-center gap-3 relative group"
       >
-        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-teal-500/30 p-1 shadow-lg shadow-teal-950/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform backdrop-blur-md">
+        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-teal-500/30 p-1 shadow-xl shadow-purple-950/60 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform backdrop-blur-md" style={{ transform: 'translateZ(20px)' }}>
           <div class="relative w-10 h-10 flex items-center justify-center">
             <svg class="w-full h-full transform -rotate-90">
               <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="3" class="text-slate-800" fill="transparent" />
