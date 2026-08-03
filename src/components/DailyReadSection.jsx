@@ -1,41 +1,66 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Utensils, Moon, Heart, Footprints } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import TodayCalorieScreen from './PhoneScreens/TodayCalorieScreen';
 
 export default function DailyReadSection() {
+  const { scrollYProgress } = useScroll();
+
+  // Scroll-Driven 3D Transformations & Lighting Shifts
+  const phoneRotateY = useTransform(scrollYProgress, [0.1, 0.35], [-4, 6]);
+  const phoneY = useTransform(scrollYProgress, [0.1, 0.35], [20, -15]);
+  const bgGradientShift = useTransform(scrollYProgress, [0.1, 0.35], [0, 40]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 },
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
+      },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 25 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-  };
+  const cardVariants = (index) => ({
+    hidden: { opacity: 0, x: -40, z: -30 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      z: 0,
+      transition: {
+        duration: 0.7,
+        delay: index * 0.12,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  });
 
   return (
-    <section class="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden">
+    <section class="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d">
       {/* Decorative Natural Plant Leaf Graphic Top Right */}
-      <div class="absolute right-0 top-0 w-64 h-64 pointer-events-none opacity-30">
+      <motion.div
+        style={{ y: bgGradientShift }}
+        class="absolute right-0 top-0 w-64 h-64 pointer-events-none opacity-30"
+      >
         <svg class="w-full h-full text-emerald-800" viewBox="0 0 100 100" fill="currentColor">
           <path d="M50 0 C70 30 90 40 100 70 C80 90 50 100 20 80 C10 60 30 20 50 0 Z" opacity="0.4" />
         </svg>
-      </div>
+      </motion.div>
 
-      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      {/* Soft Volumetric Parchment Ambient Lighting Radial Spot */}
+      <div class="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-amber-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 preserve-3d">
         
         {/* Left Column Content - Scroll Trigger Reveal */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          class="lg:col-span-4 space-y-6"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          class="lg:col-span-4 space-y-6 preserve-3d"
         >
           <p class="text-xs font-semibold tracking-[0.2em] text-purple-700 uppercase font-grotesk">
             ONE DAILY READ
@@ -52,18 +77,24 @@ export default function DailyReadSection() {
           </p>
         </motion.div>
 
-        {/* Center Column - 4 Connected Signal Nodes with Staggered Scroll Trigger */}
+        {/* Center Column - 4 Floating UI Cards with Independent Orbit & Depth */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          class="lg:col-span-4 space-y-6 select-none relative"
+          class="lg:col-span-4 space-y-6 select-none relative preserve-3d"
         >
           {/* Signal 1: BREAKFAST */}
           <motion.div
-            variants={itemVariants}
-            class="flex items-center justify-between bg-white/70 backdrop-blur-sm p-2.5 px-3 rounded-2xl border border-purple-200/60 shadow-sm relative group hover:border-purple-400 transition-colors"
+            variants={cardVariants(0)}
+            animate={{
+              y: [-4, 4, -4],
+            }}
+            transition={{
+              y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' },
+            }}
+            class="flex items-center justify-between bg-white/80 backdrop-blur-md p-2.5 px-3 rounded-2xl border border-purple-200/80 shadow-md relative group hover:border-purple-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 preserve-3d"
           >
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-600 shrink-0">
@@ -95,8 +126,14 @@ export default function DailyReadSection() {
 
           {/* Signal 2: SLEEP */}
           <motion.div
-            variants={itemVariants}
-            class="bg-white/70 backdrop-blur-sm p-3 rounded-2xl border border-purple-200/60 shadow-sm relative space-y-2 hover:border-purple-400 transition-colors"
+            variants={cardVariants(1)}
+            animate={{
+              y: [4, -5, 4],
+            }}
+            transition={{
+              y: { duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.4 },
+            }}
+            class="bg-white/80 backdrop-blur-md p-3 rounded-2xl border border-purple-200/80 shadow-md relative space-y-2 group hover:border-purple-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 preserve-3d"
           >
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-600 shrink-0">
@@ -130,8 +167,14 @@ export default function DailyReadSection() {
 
           {/* Signal 3: RECOVERY */}
           <motion.div
-            variants={itemVariants}
-            class="bg-white/70 backdrop-blur-sm p-3 rounded-2xl border border-teal-200/60 shadow-sm relative space-y-1 hover:border-teal-400 transition-colors"
+            variants={cardVariants(2)}
+            animate={{
+              y: [-5, 5, -5],
+            }}
+            transition={{
+              y: { duration: 5.1, repeat: Infinity, ease: 'easeInOut', delay: 0.8 },
+            }}
+            class="bg-white/80 backdrop-blur-md p-3 rounded-2xl border border-teal-200/80 shadow-md relative space-y-1 group hover:border-teal-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 preserve-3d"
           >
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full bg-teal-100 border border-teal-300 flex items-center justify-center text-teal-600 shrink-0">
@@ -158,8 +201,14 @@ export default function DailyReadSection() {
 
           {/* Signal 4: WORKOUT */}
           <motion.div
-            variants={itemVariants}
-            class="bg-white/70 backdrop-blur-sm p-3 rounded-2xl border border-cyan-200/60 shadow-sm relative space-y-1 hover:border-cyan-400 transition-colors"
+            variants={cardVariants(3)}
+            animate={{
+              y: [5, -4, 5],
+            }}
+            transition={{
+              y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 },
+            }}
+            class="bg-white/80 backdrop-blur-md p-3 rounded-2xl border border-cyan-200/80 shadow-md relative space-y-1 group hover:border-cyan-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 preserve-3d"
           >
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-600 shrink-0">
@@ -191,14 +240,27 @@ export default function DailyReadSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right Column - Phone Mockup Scroll Trigger Reveal */}
+        {/* Right Column - Phone Floating Above Background in 3D Space */}
         <motion.div
           initial={{ opacity: 0, x: 50, scale: 0.95 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          class="lg:col-span-4 flex justify-center lg:justify-end"
+          animate={{
+            y: [-5, 5, -5],
+            rotateZ: [-0.8, 0.8, -0.8],
+          }}
+          transition={{
+            opacity: { duration: 0.8, ease: 'easeOut' },
+            x: { duration: 0.8, ease: 'easeOut' },
+            scale: { duration: 0.8, ease: 'easeOut' },
+            y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
+            rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
+          }}
+          style={{ rotateY: phoneRotateY, y: phoneY }}
+          class="lg:col-span-4 flex justify-center lg:justify-end preserve-3d relative"
         >
+          {/* Subtle Ambient Backing Halo */}
+          <div class="absolute -inset-6 bg-gradient-to-tr from-purple-300/30 via-cyan-200/20 to-teal-200/25 rounded-[60px] blur-3xl pointer-events-none"></div>
+
           <PhoneMockup time="02:14" battery="76%">
             <TodayCalorieScreen />
           </PhoneMockup>

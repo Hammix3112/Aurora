@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 import HeroSection from './components/HeroSection';
 import DailyReadSection from './components/DailyReadSection';
 import EffortlessLoggingSection from './components/EffortlessLoggingSection';
@@ -10,9 +14,38 @@ import ResetStudioSection from './components/ResetStudioSection';
 import HistorySection from './components/HistorySection';
 import FinalCtaSection from './components/FinalCtaSection';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function App() {
+  useEffect(() => {
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    // Initialize Lenis Buttery Smooth Inertia Scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothTouch: false,
+    });
+
+    // Synchronize Lenis with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(lenis.raf);
+    };
+  }, []);
+
   return (
-    <div class="min-h-screen w-full bg-[#050711] text-white selection:bg-[#D4F933] selection:text-black overflow-x-hidden">
+    <div class="min-h-screen w-full bg-[#050711] text-white selection:bg-[#D4F933] selection:text-black overflow-x-hidden perspective-1200 preserve-3d">
       {/* Section 1: Hero Section */}
       <HeroSection />
 

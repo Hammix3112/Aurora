@@ -6,13 +6,18 @@
     --font-manrope: 'Manrope', sans-serif;
     --font-serif-luxury: 'Cormorant Garamond', Georgia, serif;
     --font-handwriting: 'Caveat', cursive;
+
+    /* Standardized Spring Physics & Cubic Bezier Timing */
+    --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-apple: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
   }
 
   body {
     font-family: var(--font-manrope);
     background-color: #05070F;
     color: #F3F4F6;
-    text-rendering: optimizeSpeed;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, .font-serif-headline {
@@ -28,19 +33,56 @@
   }
 }
 
-/* Section Performance Optimizations */
+/* GPU Hardware Acceleration & 3D Layer Composition */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+/* Section Depth Composition & Render Optimization */
 section {
   content-visibility: auto;
   contain-intrinsic-size: 1px 800px;
+  transform-style: preserve-3d;
 }
 
-/* GPU Layer Acceleration for Fast 60FPS Scrolling */
-.gpu-layer {
-  transform: translateZ(0);
-  will-change: transform, opacity;
+/* Apple-grade Volumetric Shadows & Ambient Glow Effects */
+.shadow-3d-deep {
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.7),
+    0 0 35px rgba(147, 51, 234, 0.15),
+    0 0 20px rgba(56, 189, 248, 0.1);
 }
 
-/* Optimized Glass Styles (Fast rendering without GPU blur lag) */
+.shadow-3d-phone {
+  box-shadow: 
+    0 30px 60px -15px rgba(0, 0, 0, 0.9),
+    0 0 45px rgba(56, 189, 248, 0.25),
+    0 0 25px rgba(168, 85, 247, 0.2);
+}
+
+.glow-cyan-ambient {
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.25);
+}
+
+.glow-purple-ambient {
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.25);
+}
+
+/* Glassmorphism Styles */
 .bg-parchment {
   background-color: #F7F4EE;
   background-image: 
@@ -51,20 +93,20 @@ section {
 .parchment-card {
   background: rgba(255, 253, 249, 0.92);
   border: 1px solid rgba(220, 212, 195, 0.6);
-  box-shadow: 0 10px 30px -10px rgba(70, 50, 20, 0.08);
+  box-shadow: 0 15px 35px -10px rgba(70, 50, 20, 0.1);
+  transition: transform 0.4s var(--ease-apple), box-shadow 0.4s ease;
+}
+
+.parchment-card:hover {
+  box-shadow: 0 25px 45px -10px rgba(70, 50, 20, 0.15);
 }
 
 .glass-phone {
   background: linear-gradient(135deg, rgba(20, 24, 38, 0.98) 0%, rgba(10, 13, 22, 0.99) 100%);
   box-shadow: 
     0 0 0 1px rgba(255, 255, 255, 0.15),
-    0 20px 50px -10px rgba(0, 0, 0, 0.8),
-    0 0 40px rgba(138, 92, 245, 0.2);
-}
-
-.phone-border {
-  border: 3px solid #23283B;
-  border-radius: 44px;
+    0 25px 60px -10px rgba(0, 0, 0, 0.85),
+    0 0 45px rgba(138, 92, 245, 0.25);
 }
 
 .text-gradient-lime {
@@ -77,25 +119,32 @@ section {
   background: #D4F933;
   color: #0A0D18;
   box-shadow: 0 0 20px rgba(212, 249, 51, 0.35);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: transform 0.3s var(--ease-apple), box-shadow 0.3s ease, background-color 0.2s ease;
 }
 
 .glow-btn-lime:hover {
   background: #E0FF4F;
-  box-shadow: 0 0 30px rgba(212, 249, 51, 0.5);
-  transform: translateY(-2px);
+  box-shadow: 0 0 35px rgba(212, 249, 51, 0.55);
+  transform: translateY(-3px) scale(1.02);
 }
 
 .dark-pill-btn {
   background: rgba(15, 20, 32, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.3s var(--ease-apple), border-color 0.2s ease;
 }
 
 .dark-pill-btn:hover {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.4);
   background: rgba(25, 32, 50, 0.95);
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* Mobile & Tablet Optimizations for 60FPS */
+@media (max-width: 768px) {
+  section {
+    contain-intrinsic-size: 1px 600px;
+  }
 }
 
 /* Custom Scrollbar */
@@ -111,4 +160,21 @@ section {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
+}
+
+/* Lenis Smooth Scroll Styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  scroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }

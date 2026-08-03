@@ -1,20 +1,34 @@
 import React from 'react';
 import { Wifi, Signal, Battery } from 'lucide-react';
+import { use3DTilt } from '../hooks/use3DTilt';
 
 export default function PhoneMockup({ children, time = '11:42', battery = '100%' }) {
+  const { tiltStyle, handleMouseMove, handleMouseLeave } = use3DTilt(10, 1.02);
+
   return (
-    <div class="relative mx-auto w-[290px] sm:w-[320px] h-[580px] sm:h-[620px] select-none group transition-transform duration-500 hover:scale-[1.01]" style={{ perspective: '1200px' }}>
+    <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      class="relative mx-auto w-[290px] sm:w-[320px] h-[580px] sm:h-[620px] select-none group gpu-accelerated"
+      style={{ perspective: '1200px' }}
+    >
       {/* Outer Glow Halo */}
       <div class="absolute -inset-4 bg-gradient-to-tr from-purple-600/30 via-cyan-500/20 to-teal-400/20 rounded-[52px] blur-2xl opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
 
-      {/* Phone Case Frame */}
-      <div class="relative w-full h-full bg-[#161B2E] p-2.5 rounded-[46px] shadow-2xl shadow-black border border-slate-700/80 flex flex-col justify-between overflow-hidden" style={{ transform: 'rotateY(-5deg) rotateX(2deg)', transformStyle: 'preserve-3d' }}>
+      {/* Phone Case Frame with 3D Tilt */}
+      <div
+        class="relative w-full h-full bg-[#161B2E] p-2.5 rounded-[46px] shadow-3d-phone border border-slate-700/80 flex flex-col justify-between overflow-hidden preserve-3d"
+        style={tiltStyle}
+      >
         {/* Left Side Volume Buttons */}
         <div class="absolute -left-[5px] top-24 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
         <div class="absolute -left-[5px] top-36 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
 
         {/* Right Side Power Button */}
         <div class="absolute -right-[5px] top-28 w-[4px] h-14 bg-slate-700 rounded-r-md"></div>
+
+        {/* Dynamic 3D Volumetric Light Reflection Overlay */}
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none z-40 rounded-[46px]"></div>
 
         {/* Inner Screen Container */}
         <div class="relative w-full h-full bg-[#080B18] rounded-[38px] overflow-hidden border border-slate-800 flex flex-col justify-between">

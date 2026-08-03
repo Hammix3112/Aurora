@@ -1,21 +1,34 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Utensils, Footprints, Check } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import ChatScreen from './PhoneScreens/ChatScreen';
 
 export default function AskDataSection() {
+  const { scrollYProgress } = useScroll();
+
+  // Scroll-Driven Camera Zoom & 3D Phone Rotation
+  const cameraScale = useTransform(scrollYProgress, [0.35, 0.6], [1, 1.04]);
+  const phoneRotateY = useTransform(scrollYProgress, [0.35, 0.6], [-3, 6]);
+  const phoneY = useTransform(scrollYProgress, [0.35, 0.6], [15, -15]);
+
   return (
-    <section class="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden">
-      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+    <motion.section
+      style={{ scale: cameraScale, perspective: '1200px' }}
+      class="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden gpu-accelerated preserve-3d"
+    >
+      {/* Volumetric Soft Ambient Parchment Lighting Spot */}
+      <div class="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-cyan-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 preserve-3d">
         
         {/* Left Column Text Content */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          class="lg:col-span-5 space-y-6"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          class="lg:col-span-5 space-y-6 preserve-3d"
         >
           {/* Eyebrow */}
           <p class="text-xs font-semibold tracking-[0.2em] text-purple-700 uppercase font-grotesk">
@@ -35,16 +48,24 @@ export default function AskDataSection() {
           </p>
         </motion.div>
 
-        {/* Center Column - 2 Context Prompt Cards */}
+        {/* Center Column - 2 Floating Context Prompt Cards */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          class="lg:col-span-3 space-y-16 select-none relative"
+          class="lg:col-span-3 space-y-16 select-none relative preserve-3d"
         >
           {/* Top Context Card: Actually, that was two servings */}
-          <div class="bg-white/85 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group">
+          <motion.div
+            animate={{
+              y: [-5, 5, -5],
+            }}
+            transition={{
+              y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
+            }}
+            class="bg-white/85 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
+          >
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-start gap-2.5">
                 <div class="w-8 h-8 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-600 shrink-0 mt-0.5">
@@ -75,10 +96,18 @@ export default function AskDataSection() {
             <svg class="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible">
               <path d="M0,20 Q40,20 80,0" fill="none" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="3 3" />
             </svg>
-          </div>
+          </motion.div>
 
           {/* Bottom Context Card: How did yesterday's workout affect today? */}
-          <div class="bg-white/85 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group">
+          <motion.div
+            animate={{
+              y: [5, -5, 5],
+            }}
+            transition={{
+              y: { duration: 5.0, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
+            }}
+            class="bg-white/85 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-cyan-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
+          >
             <div class="flex items-start gap-2.5">
               <div class="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-600 shrink-0 mt-0.5">
                 <Footprints class="w-3.5 h-3.5" />
@@ -95,17 +124,30 @@ export default function AskDataSection() {
             <svg class="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible">
               <path d="M0,20 Q40,20 80,40" fill="none" stroke="#38BDF8" stroke-width="1.5" />
             </svg>
-          </div>
+          </motion.div>
         </motion.div>
 
-        {/* Right Column - Phone Mockup displaying ChatScreen */}
+        {/* Right Column - Phone Mockup displaying ChatScreen suspended in 3D */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          class="lg:col-span-4 flex justify-center lg:justify-end"
+          animate={{
+            y: [-6, 6, -6],
+            rotateZ: [-0.8, 0.8, -0.8],
+          }}
+          transition={{
+            opacity: { duration: 0.8, ease: 'easeOut' },
+            x: { duration: 0.8, ease: 'easeOut' },
+            y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
+            rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
+          }}
+          style={{ rotateY: phoneRotateY, y: phoneY }}
+          class="lg:col-span-4 flex justify-center lg:justify-end preserve-3d relative"
         >
+          {/* Backing Ambient Glow */}
+          <div class="absolute -inset-6 bg-gradient-to-tr from-purple-300/30 via-cyan-200/20 to-teal-200/25 rounded-[60px] blur-3xl pointer-events-none"></div>
+
           <PhoneMockup time="03:18" battery="77%">
             <ChatScreen />
           </PhoneMockup>
@@ -118,6 +160,6 @@ export default function AskDataSection() {
           <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
-    </section>
+    </motion.section>
   );
 }
