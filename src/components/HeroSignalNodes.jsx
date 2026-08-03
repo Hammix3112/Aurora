@@ -1,35 +1,36 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Utensils, Moon, Heart } from 'lucide-react';
 
 export default function HeroSignalNodes() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   return (
-    <div class="relative w-full max-w-[280px] space-y-6 select-none preserve-3d">
-      {/* Node 1: MEAL LOGGED - Independent 3D Floating Motion */}
+    <div class="relative w-full max-w-[290px] space-y-6 select-none preserve-3d">
+      {/* Node 1: MEAL LOGGED - Slow Vertical Drift & Meal Photo Thumbnail */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{
           opacity: 1,
           x: 0,
-          y: [-5, 5, -5],
+          y: [-7, 7, -7],
         }}
         transition={{
           opacity: { duration: 0.6, delay: 0.3 },
           x: { duration: 0.6, delay: 0.3 },
-          y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' },
+          y: { duration: 5.4, repeat: Infinity, ease: 'easeInOut' },
         }}
         onMouseEnter={() => setHoveredIndex(0)}
         onMouseLeave={() => setHoveredIndex(null)}
-        class={`flex items-center gap-3 relative group cursor-pointer transition-all duration-300 ${
+        class={`flex items-center gap-3 relative group cursor-pointer transition-all duration-300 preserve-3d ${
           hoveredIndex === 0 ? 'scale-105 -translate-y-1' : ''
         }`}
       >
-        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-purple-500/30 p-1 shadow-3d-deep flex items-center justify-center shrink-0 group-hover:border-purple-400 transition-all backdrop-blur-md">
-          <div class="w-full h-full rounded-xl bg-gradient-to-tr from-amber-600 via-orange-500 to-purple-600 flex items-center justify-center text-white">
-            <Utensils class="w-6 h-6" />
-          </div>
+        <div class="w-14 h-14 rounded-2xl bg-slate-900/90 border border-purple-500/30 p-1 shadow-3d-deep flex items-center justify-center shrink-0 group-hover:border-purple-400 transition-all backdrop-blur-md overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+            alt="Meal Logged Bowl"
+            class="w-full h-full object-cover rounded-xl"
+          />
         </div>
 
         <div>
@@ -39,16 +40,17 @@ export default function HeroSignalNodes() {
           <span class="text-base font-bold text-white font-mono">12:41</span>
         </div>
 
-        {/* Curved Connection Path Line */}
-        <svg class="absolute left-full top-1/2 w-28 h-12 -translate-y-1/2 pointer-events-none overflow-visible hidden sm:block">
+        {/* Glowing Curved Connection Line to Phone */}
+        <svg class="absolute left-full top-1/2 w-32 h-14 -translate-y-1/2 pointer-events-none overflow-visible hidden sm:block">
           <path
-            d="M0,24 Q50,24 100,-10"
+            d="M0,28 Q60,28 120,-12"
             fill="none"
             stroke="url(#lineGradient1)"
-            stroke-width={hoveredIndex === 0 ? '2.5' : '1.5'}
-            stroke-dasharray={hoveredIndex === 0 ? 'none' : '4 4'}
-            class={hoveredIndex === 0 ? 'animate-pulse' : ''}
+            stroke-width={hoveredIndex === 0 ? '2.5' : '1.8'}
+            stroke-dasharray="6 4"
+            class="animate-pulse"
           />
+          <circle cx="60" cy="28" r="3" fill="#C084FC" class="animate-ping" />
           <defs>
             <linearGradient id="lineGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#C084FC" />
@@ -58,22 +60,22 @@ export default function HeroSignalNodes() {
         </svg>
       </motion.div>
 
-      {/* Node 2: SLEEP WINDOW - Independent 3D Floating Motion */}
+      {/* Node 2: SLEEP WINDOW - Gentle Horizontal Movement */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{
           opacity: 1,
-          x: 0,
-          y: [4, -6, 4],
+          x: [-5, 5, -5],
+          y: [3, -3, 3],
         }}
         transition={{
           opacity: { duration: 0.6, delay: 0.4 },
-          x: { duration: 0.6, delay: 0.4 },
-          y: { duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.4 },
+          x: { duration: 6.2, repeat: Infinity, ease: 'easeInOut', delay: 0.2 },
+          y: { duration: 4.8, repeat: Infinity, ease: 'easeInOut' },
         }}
         onMouseEnter={() => setHoveredIndex(1)}
         onMouseLeave={() => setHoveredIndex(null)}
-        class={`flex items-center gap-3 relative group cursor-pointer transition-all duration-300 ${
+        class={`flex items-center gap-3 relative group cursor-pointer transition-all duration-300 preserve-3d ${
           hoveredIndex === 1 ? 'scale-105 -translate-y-1' : ''
         }`}
       >
@@ -94,15 +96,15 @@ export default function HeroSignalNodes() {
           <span class="text-base font-bold text-white font-mono">7h 33m</span>
         </div>
 
-        {/* Curved Connection Path Line */}
-        <svg class="absolute left-full top-1/2 w-28 h-12 -translate-y-1/2 pointer-events-none overflow-visible hidden sm:block">
+        {/* Glowing Curved Connection Line to Phone */}
+        <svg class="absolute left-full top-1/2 w-32 h-14 -translate-y-1/2 pointer-events-none overflow-visible hidden sm:block">
           <path
-            d="M0,24 Q60,24 100,5"
+            d="M0,28 Q70,28 120,5"
             fill="none"
             stroke="url(#lineGradient2)"
-            stroke-width={hoveredIndex === 1 ? '2.5' : '1.5'}
-            class={hoveredIndex === 1 ? 'animate-pulse' : ''}
+            stroke-width={hoveredIndex === 1 ? '2.5' : '1.8'}
           />
+          <circle cx="70" cy="28" r="3" fill="#818CF8" class="animate-ping" />
           <defs>
             <linearGradient id="lineGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#818CF8" />
@@ -112,22 +114,22 @@ export default function HeroSignalNodes() {
         </svg>
       </motion.div>
 
-      {/* Node 3: RECOVERY - Independent 3D Floating Motion */}
+      {/* Node 3: RECOVERY - Tiny Circular Orbit */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{
           opacity: 1,
-          x: 0,
-          y: [-4, 6, -4],
+          x: [-3, 3, -3],
+          y: [3, -3, 3],
         }}
         transition={{
           opacity: { duration: 0.6, delay: 0.5 },
-          x: { duration: 0.6, delay: 0.5 },
-          y: { duration: 5.2, repeat: Infinity, ease: 'easeInOut', delay: 0.8 },
+          x: { duration: 7.0, repeat: Infinity, ease: 'easeInOut' },
+          y: { duration: 7.0, repeat: Infinity, ease: 'easeInOut', delay: 1.75 },
         }}
         onMouseEnter={() => setHoveredIndex(2)}
         onMouseLeave={() => setHoveredIndex(null)}
-        class={`flex items-center gap-3 relative group cursor-pointer transition-all duration-300 ${
+        class={`flex items-center gap-3 relative group cursor-pointer transition-all duration-300 preserve-3d ${
           hoveredIndex === 2 ? 'scale-105 -translate-y-1' : ''
         }`}
       >
@@ -147,24 +149,35 @@ export default function HeroSignalNodes() {
           </span>
           <span class="text-xs text-teal-300 font-medium">On track</span>
         </div>
+
+        {/* Glowing Curved Connection Line to Phone */}
+        <svg class="absolute left-full top-1/2 w-32 h-14 -translate-y-1/2 pointer-events-none overflow-visible hidden sm:block">
+          <path
+            d="M0,28 Q70,28 120,20"
+            fill="none"
+            stroke="#2DD4BF"
+            stroke-width={hoveredIndex === 2 ? '2.5' : '1.8'}
+          />
+          <circle cx="70" cy="28" r="3" fill="#2DD4BF" class="animate-ping" />
+        </svg>
       </motion.div>
 
-      {/* Node 4: WORKOUT & Line Chart - Independent 3D Floating Motion */}
+      {/* Node 4: WORKOUT & Line Chart - Small Z-Depth Movement */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{
           opacity: 1,
-          x: 0,
-          y: [5, -4, 5],
+          scale: [0.98, 1.02, 0.98],
+          y: [4, -4, 4],
         }}
         transition={{
           opacity: { duration: 0.6, delay: 0.6 },
-          x: { duration: 0.6, delay: 0.6 },
-          y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 },
+          scale: { duration: 5.8, repeat: Infinity, ease: 'easeInOut' },
+          y: { duration: 5.8, repeat: Infinity, ease: 'easeInOut' },
         }}
         onMouseEnter={() => setHoveredIndex(3)}
         onMouseLeave={() => setHoveredIndex(null)}
-        class={`space-y-1 relative cursor-pointer transition-all duration-300 ${
+        class={`space-y-1 relative cursor-pointer transition-all duration-300 preserve-3d ${
           hoveredIndex === 3 ? 'scale-105 -translate-y-1' : ''
         }`}
       >

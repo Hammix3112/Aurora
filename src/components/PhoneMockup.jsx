@@ -3,19 +3,23 @@ import { Wifi, Signal, Battery } from 'lucide-react';
 import { use3DTilt } from '../hooks/use3DTilt';
 
 export default function PhoneMockup({ children, time = '11:42', battery = '100%' }) {
-  const { tiltStyle, handleMouseMove, handleMouseLeave } = use3DTilt(10, 1.02);
+  // Cursor tilt restricted to a max of 6 degrees for subtle, physically believable response
+  const { tiltStyle, handleMouseMove, handleMouseLeave } = use3DTilt(6, 1.015);
 
   return (
     <div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      class="relative mx-auto w-[290px] sm:w-[320px] h-[580px] sm:h-[620px] select-none group gpu-accelerated"
+      class="relative mx-auto w-[290px] sm:w-[320px] h-[580px] sm:h-[620px] select-none group gpu-accelerated preserve-3d"
       style={{ perspective: '1200px' }}
     >
-      {/* Outer Glow Halo */}
-      <div class="absolute -inset-4 bg-gradient-to-tr from-purple-600/30 via-cyan-500/20 to-teal-400/20 rounded-[52px] blur-2xl opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+      {/* Outer Volumetric Aurora Rim Light Halo */}
+      <div class="absolute -inset-5 bg-gradient-to-tr from-purple-600/30 via-cyan-400/25 to-teal-300/20 rounded-[56px] blur-2xl opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-      {/* Phone Case Frame with 3D Tilt */}
+      {/* Realistic Soft Contact Drop Shadow Beneath Device */}
+      <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[85%] h-12 bg-black/80 rounded-full blur-xl pointer-events-none transform rotateX(75deg)"></div>
+
+      {/* Phone Case Frame with Dynamic 3D Tilt & Glass Edge Reflections */}
       <div
         class="relative w-full h-full bg-[#161B2E] p-2.5 rounded-[46px] shadow-3d-phone border border-slate-700/80 flex flex-col justify-between overflow-hidden preserve-3d"
         style={tiltStyle}
@@ -27,8 +31,9 @@ export default function PhoneMockup({ children, time = '11:42', battery = '100%'
         {/* Right Side Power Button */}
         <div class="absolute -right-[5px] top-28 w-[4px] h-14 bg-slate-700 rounded-r-md"></div>
 
-        {/* Dynamic 3D Volumetric Light Reflection Overlay */}
-        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none z-40 rounded-[46px]"></div>
+        {/* Dynamic Glass Specular Edge Reflection Highlights */}
+        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/8 to-transparent pointer-events-none z-40 rounded-[46px]"></div>
+        <div class="absolute inset-[1px] border border-white/10 rounded-[45px] pointer-events-none z-40"></div>
 
         {/* Inner Screen Container */}
         <div class="relative w-full h-full bg-[#080B18] rounded-[38px] overflow-hidden border border-slate-800 flex flex-col justify-between">
