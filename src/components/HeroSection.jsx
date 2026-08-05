@@ -34,17 +34,18 @@ export default function HeroSection() {
 
   return (
     <motion.section
+      aria-label="Hero Showcase"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      class="relative w-full min-h-screen bg-[#050711] overflow-hidden flex flex-col justify-between pt-2 pb-16 gpu-accelerated preserve-3d"
+      className="relative w-full min-h-screen bg-[#050711] overflow-hidden flex flex-col justify-between pt-2 pb-16 gpu-accelerated preserve-3d"
     >
-      {/* WEBGL 3D SCENE: React Three Fiber Canvas with PerspectiveCamera, 3D Phone, 3D Widgets at Z-Depths & Procedural 3D Aurora */}
+      {/* WEBGL 3D SCENE */}
       <HeroCanvas3D />
 
       {/* Top Navbar Header */}
       <Navbar />
 
       {/* HTML Layer: Typography & CTA Buttons overlaying 3D Scene */}
-      <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto pt-4 pointer-events-none preserve-3d">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto pt-4 pointer-events-none preserve-3d">
         
         {/* Left Column - HTML Typography & Interactive Buttons */}
         <motion.div
@@ -52,36 +53,44 @@ export default function HeroSection() {
           initial="hidden"
           animate="visible"
           style={{ y: textY }}
-          class="lg:col-span-6 space-y-6 pointer-events-auto preserve-3d"
+          className="lg:col-span-6 space-y-6 pointer-events-auto preserve-3d"
         >
           {/* Eyebrow */}
-          <motion.p variants={itemVariants} class="text-xs font-semibold tracking-[0.2em] text-purple-300 uppercase font-grotesk">
+          <motion.p variants={itemVariants} className="text-xs font-semibold tracking-[0.2em] text-purple-300 uppercase font-grotesk">
             CONNECTED NUTRITION + HEALTH
           </motion.p>
 
           {/* Main Headline */}
-          <motion.h1 variants={itemVariants} class="text-4xl sm:text-6xl xl:text-7xl font-serif leading-[1.08] text-white tracking-tight">
+          <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl xl:text-7xl font-serif leading-[1.08] text-white tracking-tight">
             See how<br />
             your day<br />
-            <span class="bg-gradient-to-r from-purple-300 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-300 via-indigo-300 to-cyan-300 bg-clip-text text-transparent">
               connects
             </span>
-            <span class="text-cyan-400">.</span>
+            <span className="text-cyan-400">.</span>
           </motion.h1>
 
           {/* Subtitle */}
-          <motion.p variants={itemVariants} class="text-slate-300 text-sm sm:text-base font-light leading-relaxed max-w-md">
+          <motion.p variants={itemVariants} className="text-slate-200 text-sm sm:text-base font-light leading-relaxed max-w-md">
             Log food naturally. Bring in sleep, recovery and workouts. Aurora turns the signals across your day into one clearer picture.
           </motion.p>
 
-          {/* CTA Buttons - Spring Elevation on Hover */}
-          <motion.div variants={itemVariants} class="flex flex-wrap items-center gap-4 pt-2 preserve-3d">
-            <button class="glow-btn-lime px-7 py-3.5 rounded-full font-grotesk font-semibold text-sm flex items-center gap-2 group transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.025]">
+          {/* CTA Buttons */}
+          <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2 preserve-3d">
+            <button
+              type="button"
+              aria-label="Join the beta program"
+              className="glow-btn-lime px-7 py-3.5 rounded-full font-grotesk font-semibold text-sm flex items-center gap-2 group transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.025] focus:outline-none focus:ring-2 focus:ring-lime-300"
+            >
               Join the beta
-              <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </button>
 
-            <button class="dark-pill-btn px-7 py-3.5 rounded-full font-grotesk font-medium text-sm text-slate-200 hover:border-slate-500 transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.025]">
+            <button
+              type="button"
+              aria-label="Explore Aurora features"
+              className="dark-pill-btn px-7 py-3.5 rounded-full font-grotesk font-medium text-sm text-slate-200 hover:border-slate-500 transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.025] focus:outline-none focus:ring-2 focus:ring-purple-400"
+            >
               Explore Aurora
             </button>
           </motion.div>
@@ -89,12 +98,12 @@ export default function HeroSection() {
       </div>
 
       {/* Bottom Wave Transition into Light Section */}
-      <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1 pointer-events-none">
-        <svg class="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1 pointer-events-none">
+        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,40 C300,110 700,-20 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
         </svg>
 
-        <div class="absolute bottom-3 left-12 text-[10px] uppercase tracking-[0.2em] font-semibold text-purple-700 font-grotesk">
+        <div className="absolute bottom-3 left-12 text-[10px] uppercase tracking-[0.2em] font-semibold text-purple-700 font-grotesk">
           INSIGHTS THAT ADD UP
         </div>
       </div>

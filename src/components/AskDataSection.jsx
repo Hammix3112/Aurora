@@ -14,13 +14,14 @@ export default function AskDataSection() {
 
   return (
     <motion.section
+      aria-label="Ask Your Data Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      class="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden gpu-accelerated preserve-3d"
     >
       {/* Volumetric Soft Ambient Parchment Lighting Spot */}
-      <div class="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-cyan-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
+      <div className="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-cyan-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
 
-      <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 preserve-3d">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 preserve-3d">
         
         {/* Left Column Text Content */}
         <motion.div
@@ -28,35 +29,35 @@ export default function AskDataSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          class="lg:col-span-5 space-y-6 preserve-3d"
+          className="lg:col-span-5 space-y-6 preserve-3d"
         >
           {/* Eyebrow */}
-          <p class="text-xs font-semibold tracking-[0.2em] text-purple-700 uppercase font-grotesk">
+          <p className="text-xs font-semibold tracking-[0.2em] text-purple-800 uppercase font-grotesk">
             ASK YOUR OWN DATA
           </p>
 
           {/* Main Headline */}
-          <h2 class="text-4xl sm:text-6xl font-serif leading-[1.08] text-slate-900 tracking-tight">
+          <h2 className="text-4xl sm:text-6xl font-serif leading-[1.08] text-slate-900 tracking-tight">
             Talk to your<br />
             health like you<br />
-            talk to a person<span class="text-purple-600 font-sans">.</span>
+            talk to a person<span className="text-purple-700 font-sans">.</span>
           </h2>
 
           {/* Subtitle */}
-          <p class="text-slate-600 text-sm sm:text-base font-light leading-relaxed max-w-sm">
+          <p className="text-slate-700 text-sm sm:text-base font-light leading-relaxed max-w-sm">
             Ask about a workout. Correct a meal. Understand a change. Aurora answers from the context you have built.
           </p>
         </motion.div>
 
-        {/* Center Column - 2 Floating Context Prompt Cards */}
+        {/* Center Column */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          class="lg:col-span-3 space-y-16 select-none relative preserve-3d"
+          className="lg:col-span-3 space-y-16 select-none relative preserve-3d"
         >
-          {/* Top Context Card: Actually, that was two servings */}
+          {/* Top Context Card */}
           <motion.div
             animate={{
               y: [-5, 5, -5],
@@ -64,41 +65,44 @@ export default function AskDataSection() {
             transition={{
               y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
             }}
-            class="bg-white/85 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
+            className="bg-white/90 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
           >
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex items-start gap-2.5">
-                <div class="w-8 h-8 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-600 shrink-0 mt-0.5">
-                  <Utensils class="w-3.5 h-3.5" />
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0 mt-0.5">
+                  <Utensils className="w-3.5 h-3.5" aria-hidden="true" />
                 </div>
                 <div>
-                  <p class="text-xs font-bold text-slate-900 leading-snug">
+                  <p className="text-xs font-bold text-slate-900 leading-snug">
                     Actually, that was two servings.
                   </p>
-                  <span class="text-[9.5px] text-slate-500 font-mono">Lunch · 12:41 PM</span>
+                  <span className="text-[9.5px] text-slate-600 font-mono">Lunch · 12:41 PM</span>
                 </div>
               </div>
 
               {/* Meal thumbnail with check badge */}
-              <div class="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-amber-200 shrink-0">
+              <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-amber-200 shrink-0">
                 <img
                   src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
                   alt="Meal serving"
-                  class="w-full h-full object-cover"
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
                 />
-                <div class="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-teal-500 text-white flex items-center justify-center text-[7px] font-bold">
-                  <Check class="w-2 h-2" />
+                <div className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-teal-500 text-white flex items-center justify-center text-[7px] font-bold">
+                  <Check className="w-2 h-2" aria-hidden="true" />
                 </div>
               </div>
             </div>
 
-            {/* Line to Phone */}
-            <svg class="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible">
-              <path d="M0,20 Q40,20 80,0" fill="none" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="3 3" />
+            <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
+              <path d="M0,20 Q40,20 80,0" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeDasharray="3 3" />
             </svg>
           </motion.div>
 
-          {/* Bottom Context Card: How did yesterday's workout affect today? */}
+          {/* Bottom Context Card */}
           <motion.div
             animate={{
               y: [5, -5, 5],
@@ -106,28 +110,27 @@ export default function AskDataSection() {
             transition={{
               y: { duration: 5.0, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
             }}
-            class="bg-white/85 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-cyan-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
+            className="bg-white/90 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-cyan-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
           >
-            <div class="flex items-start gap-2.5">
-              <div class="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-600 shrink-0 mt-0.5">
-                <Footprints class="w-3.5 h-3.5" />
+            <div className="flex items-start gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0 mt-0.5">
+                <Footprints className="w-3.5 h-3.5" aria-hidden="true" />
               </div>
               <div>
-                <p class="text-xs font-bold text-slate-900 leading-snug">
+                <p className="text-xs font-bold text-slate-900 leading-snug">
                   How did yesterday's workout affect today?
                 </p>
-                <span class="text-[9.5px] text-slate-500 font-mono">11:32 AM</span>
+                <span className="text-[9.5px] text-slate-600 font-mono">11:32 AM</span>
               </div>
             </div>
 
-            {/* Line to Phone */}
-            <svg class="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible">
-              <path d="M0,20 Q40,20 80,40" fill="none" stroke="#38BDF8" stroke-width="1.5" />
+            <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
+              <path d="M0,20 Q40,20 80,40" fill="none" stroke="#38BDF8" strokeWidth="1.5" />
             </svg>
           </motion.div>
         </motion.div>
 
-        {/* Right Column - Phone Mockup displaying ChatScreen suspended in 3D */}
+        {/* Right Column */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -143,10 +146,9 @@ export default function AskDataSection() {
             rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
           }}
           style={{ rotateY: phoneRotateY, y: phoneY }}
-          class="lg:col-span-4 flex justify-center lg:justify-end preserve-3d relative"
+          className="lg:col-span-4 flex justify-center lg:justify-end preserve-3d relative"
         >
-          {/* Backing Ambient Glow */}
-          <div class="absolute -inset-6 bg-gradient-to-tr from-purple-300/30 via-cyan-200/20 to-teal-200/25 rounded-[60px] blur-3xl pointer-events-none"></div>
+          <div className="absolute -inset-6 bg-gradient-to-tr from-purple-300/30 via-cyan-200/20 to-teal-200/25 rounded-[60px] blur-3xl pointer-events-none"></div>
 
           <PhoneMockup time="03:18" battery="77%">
             <ChatScreen />
@@ -154,9 +156,9 @@ export default function AskDataSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition to Deep Space Section */}
-      <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg class="relative block w-full h-16 text-[#04060E]" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      {/* Bottom Wavy Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
+        <svg className="relative block w-full h-16 text-[#04060E]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
