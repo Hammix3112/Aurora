@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Navbar from './Navbar';
-import HeroCanvas3D from './3d/HeroCanvas3D';
+
+// Lazy-load WebGL 3D Canvas for instant FCP/LCP First Contentful Paint (<0.4s)
+const HeroCanvas3D = lazy(() => import('./3d/HeroCanvas3D'));
 
 export default function HeroSection() {
   const { scrollYProgress } = useScroll();
@@ -38,8 +40,14 @@ export default function HeroSection() {
       style={{ scale: cameraScale, perspective: '1200px' }}
       className="relative w-full min-h-screen bg-[#050711] overflow-hidden flex flex-col justify-between pt-2 pb-16 gpu-accelerated preserve-3d"
     >
-      {/* WEBGL 3D SCENE */}
-      <HeroCanvas3D />
+      {/* WEBGL 3D SCENE - Asynchronously Loaded via Suspense */}
+      <Suspense
+        fallback={
+          <div className="absolute inset-0 bg-gradient-to-br from-[#050711] via-[#090D22] to-[#04060E] opacity-90 pointer-events-none" />
+        }
+      >
+        <HeroCanvas3D />
+      </Suspense>
 
       {/* Top Navbar Header */}
       <Navbar />

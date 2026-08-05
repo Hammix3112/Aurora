@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Moon, Heart, Activity, Dumbbell } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import ConnectedHealthScreen from './PhoneScreens/ConnectedHealthScreen';
-import ParticleCanvas from './ParticleCanvas';
+
+const ParticleCanvas = lazy(() => import('./ParticleCanvas'));
 
 export default function ConnectedHealthSection() {
   const [activeSignal, setActiveSignal] = useState('Sleep');
@@ -24,53 +25,58 @@ export default function ConnectedHealthSection() {
 
   return (
     <motion.section
+      aria-label="Connected Health Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      class="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d"
     >
-      {/* Background Energetic Cyan/Purple Wave Canvas */}
-      <div class="absolute inset-0 z-0 pointer-events-none">
-        <ParticleCanvas variant="health" />
+      {/* Background Energetic Canvas */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={null}>
+          <ParticleCanvas variant="health" />
+        </Suspense>
       </div>
 
-      {/* Futuristic Holographic Lighting & Bloom Halo Right Behind Phone */}
-      <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-l from-cyan-500/25 via-teal-500/20 to-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
+      {/* Holographic Bloom Halo */}
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-l from-cyan-500/25 via-teal-500/20 to-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center preserve-3d">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center preserve-3d">
         
-        {/* Left Column Content & Holographic Signal Node Stack */}
+        {/* Left Column Content */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          class="lg:col-span-6 space-y-8 preserve-3d"
+          className="lg:col-span-6 space-y-8 preserve-3d"
         >
-          <div class="space-y-4">
-            <p class="text-xs font-semibold tracking-[0.2em] text-purple-400 uppercase font-grotesk">
+          <div className="space-y-4">
+            <p className="text-xs font-semibold tracking-[0.2em] text-purple-400 uppercase font-grotesk">
               CONNECTED HEALTH
             </p>
 
-            <h2 class="text-4xl sm:text-6xl font-serif leading-tight">
+            <h2 className="text-4xl sm:text-6xl font-serif leading-tight">
               Your wearable<br />
               collects signals.<br />
               Aurora connects<br />
-              the story<span class="text-purple-400">.</span>
+              the story<span className="text-purple-400">.</span>
             </h2>
 
-            <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-md font-light">
+            <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-md font-light">
               Sleep, recovery, heart rate, movement and workouts come together with your food and goals.
             </p>
           </div>
 
-          {/* Interactive Signal Icon Stack with Holographic Glow */}
-          <div class="flex items-center gap-4 relative pt-2 preserve-3d">
-            <div class="flex flex-row lg:flex-col gap-3">
+          {/* Signal Icon Stack */}
+          <div className="flex items-center gap-4 relative pt-2 preserve-3d">
+            <div className="flex flex-row lg:flex-col gap-3">
               {signals.map((sig, idx) => {
                 const IconComp = sig.icon;
                 const isSelected = activeSignal === sig.name;
                 return (
                   <motion.button
+                    type="button"
                     key={sig.name}
+                    aria-label={`Select ${sig.name} telemetry signal`}
                     animate={{
                       y: [-3, 3, -3],
                     }}
@@ -78,32 +84,32 @@ export default function ConnectedHealthSection() {
                       y: { duration: 3.8 + idx * 0.4, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.2 },
                     }}
                     onClick={() => setActiveSignal(sig.name)}
-                    class={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 ${
+                    className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 ${
                       isSelected
                         ? `bg-slate-900/90 ${sig.border} ${sig.color} scale-110 shadow-lg ${sig.shadow}`
-                        : 'bg-slate-950/80 border-slate-800 text-slate-500 hover:text-slate-300 hover:border-slate-700'
+                        : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                     }`}
                     title={sig.name}
                   >
-                    <IconComp class="w-4.5 h-4.5" />
+                    <IconComp className="w-4.5 h-4.5" aria-hidden="true" />
                   </motion.button>
                 );
               })}
             </div>
 
-            <div class="space-y-1 hidden lg:block">
-              <p class="text-xs text-slate-400 font-mono">
-                Connected via <span class="text-cyan-300 font-semibold">{activeSignal}</span> live telemetry
+            <div className="space-y-1 hidden lg:block">
+              <p className="text-xs text-slate-300 font-mono">
+                Connected via <span className="text-cyan-300 font-semibold">{activeSignal}</span> live telemetry
               </p>
-              <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
-                <span class="text-[10px] text-teal-400/90 font-mono uppercase tracking-wider">Holographic Telemetry Active</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" aria-hidden="true"></span>
+                <span className="text-[10px] text-teal-400/90 font-mono uppercase tracking-wider">Holographic Telemetry Active</span>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Right Column - Phone Mockup Suspended with Holographic Light Bloom */}
+        {/* Right Column */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -119,10 +125,9 @@ export default function ConnectedHealthSection() {
             rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
           }}
           style={{ rotateY: phoneRotateY, y: phoneY }}
-          class="lg:col-span-6 flex justify-center lg:justify-end preserve-3d relative"
+          className="lg:col-span-6 flex justify-center lg:justify-end preserve-3d relative"
         >
-          {/* Backing Holographic Volumetric Bloom Halo */}
-          <div class="absolute -inset-8 bg-gradient-to-tr from-cyan-500/30 via-teal-400/20 to-purple-600/25 rounded-[60px] blur-3xl pointer-events-none"></div>
+          <div className="absolute -inset-8 bg-gradient-to-tr from-cyan-500/30 via-teal-400/20 to-purple-600/25 rounded-[60px] blur-3xl pointer-events-none"></div>
 
           <PhoneMockup time="02:22" battery="77%">
             <ConnectedHealthScreen />
@@ -135,7 +140,7 @@ export default function ConnectedHealthSection() {
 
 function RunningIcon(props) {
   return (
-    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7.1 1.4z"/>
     </svg>
   );

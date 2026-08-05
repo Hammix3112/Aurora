@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Utensils, Dumbbell, Heart } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import LunchLogScreen from './PhoneScreens/LunchLogScreen';
-import ParticleCanvas from './ParticleCanvas';
+
+// Lazy load non-critical canvas particle background
+const ParticleCanvas = lazy(() => import('./ParticleCanvas'));
 
 export default function FinalCtaSection() {
   const { scrollYProgress } = useScroll();
@@ -21,7 +23,9 @@ export default function FinalCtaSection() {
     >
       {/* Background Interactive Cosmic Particle Canvas */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <ParticleCanvas variant="hero" />
+        <Suspense fallback={null}>
+          <ParticleCanvas variant="hero" />
+        </Suspense>
       </div>
 
       {/* Volumetric Blue & Purple Rays Converging Toward Phone */}
