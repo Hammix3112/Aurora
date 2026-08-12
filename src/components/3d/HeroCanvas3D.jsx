@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { EffectComposer, Bloom, Vignette, Noise } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import Aurora3DBackground from './Aurora3DBackground';
 import Phone3D from './Phone3D';
 import Widgets3D from './Widgets3D';
 import EnergyTrails3D from './EnergyTrails3D';
@@ -134,12 +133,8 @@ export default function HeroCanvas3D() {
         }}
         className="w-full h-full"
       >
-        <color attach="background" args={['#050711']} />
         <CameraRig mousePosition={mousePosition} scrollY={scrollY} />
         <SceneLighting />
-
-        {/* Background */}
-        <Aurora3DBackground />
 
         {/* Energy Trails */}
         <EnergyTrails3D mousePosition={mousePosition} onPhoneRipple={handlePhoneRipple} />
@@ -150,7 +145,7 @@ export default function HeroCanvas3D() {
         {/* 3D Phone Centerpiece */}
         <Phone3D mousePosition={mousePosition} rippleActive={rippleActive} />
 
-        {/* High-Performance Post-Processing (Skipped on low power devices for maximum FPS & high Lighthouse TBT score) */}
+        {/* High-Performance Post-Processing */}
         {!isLowPower && (
           <EffectComposer multisampling={0} disableNormalPass>
             <Bloom

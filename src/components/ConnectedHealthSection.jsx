@@ -1,19 +1,22 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Moon, Heart, Activity, Dumbbell } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import ConnectedHealthScreen from './PhoneScreens/ConnectedHealthScreen';
 
-const ParticleCanvas = lazy(() => import('./ParticleCanvas'));
+const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function ConnectedHealthSection() {
   const [activeSignal, setActiveSignal] = useState('Sleep');
   const { scrollYProgress } = useScroll();
 
-  // Scroll-Driven Cinematic Camera Zoom & 3D Phone Rotation
+  // Scroll-Driven Cinematic Camera Zoom & 3D Phone Rotation with Spring Dampening
   const cameraScale = useTransform(scrollYProgress, [0.25, 0.5], [1, 1.05]);
-  const phoneRotateY = useTransform(scrollYProgress, [0.25, 0.5], [-4, 8]);
-  const phoneY = useTransform(scrollYProgress, [0.25, 0.5], [20, -15]);
+  const rawRotateY = useTransform(scrollYProgress, [0.25, 0.5], [-4, 8]);
+  const rawPhoneY = useTransform(scrollYProgress, [0.25, 0.5], [20, -15]);
+
+  const phoneRotateY = useSpring(rawRotateY, { stiffness: 60, damping: 25, mass: 0.4 });
+  const phoneY = useSpring(rawPhoneY, { stiffness: 60, damping: 25, mass: 0.4 });
 
   const signals = [
     { name: 'Sleep', icon: Moon, color: 'text-purple-400', border: 'border-purple-500/60', shadow: 'shadow-purple-500/30' },
@@ -29,10 +32,17 @@ export default function ConnectedHealthSection() {
       style={{ scale: cameraScale, perspective: '1200px' }}
       className="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d"
     >
-      {/* Background Energetic Canvas */}
+      {/* Top Flowing Wave Curve Transition */}
+      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
+        <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
+        </svg>
+      </div>
+
+      {/* Hero Three.js Shader Background Animation */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Suspense fallback={null}>
-          <ParticleCanvas variant="health" />
+          <BackgroundCanvas />
         </Suspense>
       </div>
 
@@ -133,6 +143,13 @@ export default function ConnectedHealthSection() {
             <ConnectedHealthScreen />
           </PhoneMockup>
         </motion.div>
+      </div>
+
+      {/* Bottom Wavy Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
+        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+        </svg>
       </div>
     </motion.section>
   );

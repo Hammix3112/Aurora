@@ -3,8 +3,8 @@ import { Wifi, Signal, Battery } from 'lucide-react';
 import { use3DTilt } from '../hooks/use3DTilt';
 
 export default function PhoneMockup({ children, time = '11:42', battery = '100%' }) {
-  // Cursor tilt restricted to a max of 6 degrees for subtle, physically believable response
-  const { tiltStyle, handleMouseMove, handleMouseLeave } = use3DTilt(6, 1.015);
+  // Cursor tilt with 6 degree angle, 1.015 scale, and 18px 3D depth displacement
+  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(6, 1.015, 18);
 
   return (
     <div
@@ -16,30 +16,38 @@ export default function PhoneMockup({ children, time = '11:42', battery = '100%'
       {/* Outer Volumetric Aurora Rim Light Halo */}
       <div className="absolute -inset-5 bg-gradient-to-tr from-purple-600/30 via-cyan-400/25 to-teal-300/20 rounded-[56px] blur-2xl opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-      {/* Realistic Soft Contact Drop Shadow Beneath Device */}
-      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[85%] h-12 bg-black/80 rounded-full blur-xl pointer-events-none transform rotateX(75deg)"></div>
-
       {/* Phone Case Frame with Dynamic 3D Tilt & Glass Edge Reflections */}
       <div
-        className="relative w-full h-full bg-[#161B2E] p-2.5 rounded-[46px] shadow-3d-phone border border-slate-700/80 flex flex-col justify-between overflow-hidden preserve-3d"
+        className="relative w-full h-full bg-[#161B2E] p-2.5 rounded-[46px] border border-slate-700/80 flex flex-col justify-between overflow-hidden preserve-3d"
         style={tiltStyle}
       >
         {/* Left Side Volume Buttons */}
-        <div className="absolute -left-[5px] top-24 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
-        <div className="absolute -left-[5px] top-36 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
+        <div className="absolute -left-[5px] top-24 w-[4px] h-10 bg-slate-700 rounded-l-md" style={{ transform: 'translateZ(-4px)' }}></div>
+        <div className="absolute -left-[5px] top-36 w-[4px] h-10 bg-slate-700 rounded-l-md" style={{ transform: 'translateZ(-4px)' }}></div>
 
         {/* Right Side Power Button */}
-        <div className="absolute -right-[5px] top-28 w-[4px] h-14 bg-slate-700 rounded-r-md"></div>
+        <div className="absolute -right-[5px] top-28 w-[4px] h-14 bg-slate-700 rounded-r-md" style={{ transform: 'translateZ(-4px)' }}></div>
+
+        {/* Dynamic Specular Reflection Layer */}
+        <div
+          className="absolute inset-0 pointer-events-none z-50 rounded-[46px]"
+          style={shineStyle}
+        ></div>
 
         {/* Dynamic Glass Specular Edge Reflection Highlights */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/8 to-transparent pointer-events-none z-40 rounded-[46px]"></div>
-        <div className="absolute inset-[1px] border border-white/10 rounded-[45px] pointer-events-none z-40"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none z-40 rounded-[46px]"></div>
+        <div className="absolute inset-[1px] border border-white/15 rounded-[45px] pointer-events-none z-40"></div>
 
-        {/* Inner Screen Container */}
-        <div className="relative w-full h-full bg-[#080B18] rounded-[38px] overflow-hidden border border-slate-800 flex flex-col justify-between">
-          
-          {/* Status Bar */}
-          <div className="bg-black/90 text-white px-5 pt-2 pb-1.5 flex items-center justify-between text-[11px] font-mono tracking-tighter shrink-0 z-30">
+        {/* Inner Screen Container with 3D Z-Offset */}
+        <div
+          className="relative w-full h-full bg-[#080B18] rounded-[38px] overflow-hidden border border-slate-800 flex flex-col justify-between preserve-3d"
+          style={{ transform: 'translateZ(12px)' }}
+        >
+          {/* Status Bar with 3D Z-Offset */}
+          <div
+            className="bg-black/90 text-white px-5 pt-2 pb-1.5 flex items-center justify-between text-[11px] font-mono tracking-tighter shrink-0 z-30 preserve-3d"
+            style={{ transform: 'translateZ(8px)' }}
+          >
             <span className="font-medium text-slate-200">{time}</span>
 
             {/* Top Punch Hole Camera & Speaker */}
@@ -64,7 +72,10 @@ export default function PhoneMockup({ children, time = '11:42', battery = '100%'
           </div>
 
           {/* Android Navigation Bar */}
-          <div className="bg-black/95 py-1.5 px-8 flex items-center justify-between text-slate-500 shrink-0 z-30 border-t border-slate-900">
+          <div
+            className="bg-black/95 py-1.5 px-8 flex items-center justify-between text-slate-500 shrink-0 z-30 border-t border-slate-900 preserve-3d"
+            style={{ transform: 'translateZ(8px)' }}
+          >
             <button type="button" aria-label="Navigate Back" className="hover:text-white transition-colors">
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />

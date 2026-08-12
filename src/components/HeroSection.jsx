@@ -3,8 +3,9 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Navbar from './Navbar';
 
-// Lazy-load WebGL 3D Canvas for instant FCP/LCP First Contentful Paint (<0.4s)
+// Lazy-load WebGL 3D Canvas & User Shader Background
 const HeroCanvas3D = lazy(() => import('./3d/HeroCanvas3D'));
+const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function HeroSection() {
   const { scrollYProgress } = useScroll();
@@ -38,14 +39,15 @@ export default function HeroSection() {
     <motion.section
       aria-label="Hero Showcase"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full min-h-screen bg-[#050711] overflow-hidden flex flex-col justify-between pt-2 pb-16 gpu-accelerated preserve-3d"
+      className="relative w-full min-h-screen bg-[#030509] overflow-hidden flex flex-col justify-between pt-2 pb-16 gpu-accelerated preserve-3d"
     >
-      {/* WEBGL 3D SCENE - Asynchronously Loaded via Suspense */}
-      <Suspense
-        fallback={
-          <div className="absolute inset-0 bg-gradient-to-br from-[#050711] via-[#090D22] to-[#04060E] opacity-90 pointer-events-none" />
-        }
-      >
+      {/* USER'S CUSTOM THREE.JS GLSL SHADER BACKGROUND CANVAS */}
+      <Suspense fallback={null}>
+        <BackgroundCanvas />
+      </Suspense>
+
+      {/* WEBGL 3D SCENE (Phone Centerpiece, Floating Glass Widgets & Energy Connection Trails) */}
+      <Suspense fallback={null}>
         <HeroCanvas3D />
       </Suspense>
 

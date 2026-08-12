@@ -1,19 +1,22 @@
 import React, { lazy, Suspense } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Dumbbell } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import WorkoutDetailScreen from './PhoneScreens/WorkoutDetailScreen';
 
-const ParticleCanvas = lazy(() => import('./ParticleCanvas'));
+const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function WorkoutIntelligenceSection() {
   const { scrollYProgress } = useScroll();
 
-  // Scroll-Driven Camera & Graph Transformations
+  // Scroll-Driven Camera & Graph Transformations with Spring Dampening
   const cameraScale = useTransform(scrollYProgress, [0.45, 0.7], [1, 1.05]);
-  const phoneRotateY = useTransform(scrollYProgress, [0.45, 0.7], [-4, 8]);
-  const phoneY = useTransform(scrollYProgress, [0.45, 0.7], [20, -15]);
+  const rawRotateY = useTransform(scrollYProgress, [0.45, 0.7], [-4, 8]);
+  const rawPhoneY = useTransform(scrollYProgress, [0.45, 0.7], [20, -15]);
   const graphPathLength = useTransform(scrollYProgress, [0.45, 0.65], [0.2, 1]);
+
+  const phoneRotateY = useSpring(rawRotateY, { stiffness: 60, damping: 25, mass: 0.4 });
+  const phoneY = useSpring(rawPhoneY, { stiffness: 60, damping: 25, mass: 0.4 });
 
   return (
     <motion.section
@@ -21,10 +24,17 @@ export default function WorkoutIntelligenceSection() {
       style={{ scale: cameraScale, perspective: '1200px' }}
       className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d"
     >
-      {/* Background Energetic Pulsing Canvas */}
+      {/* Top Flowing Wave Curve Transition */}
+      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
+        <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
+        </svg>
+      </div>
+
+      {/* Hero Three.js Shader Background Animation */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Suspense fallback={null}>
-          <ParticleCanvas variant="health" />
+          <BackgroundCanvas />
         </Suspense>
       </div>
 
