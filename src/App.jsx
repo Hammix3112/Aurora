@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,6 +13,8 @@ import EvidenceSection from './components/EvidenceSection';
 import ResetStudioSection from './components/ResetStudioSection';
 import HistorySection from './components/HistorySection';
 import FinalCtaSection from './components/FinalCtaSection';
+
+const PersistentScene = lazy(() => import('./components/3d/PersistentScene'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,7 +47,12 @@ export default function App() {
   }, []);
 
   return (
-    <div class="min-h-screen w-full bg-[#050711] text-white selection:bg-[#D4F933] selection:text-black overflow-x-hidden perspective-1200 preserve-3d">
+    <div className="relative min-h-screen w-full bg-[#050711] text-white selection:bg-[#D4F933] selection:text-black overflow-x-hidden perspective-1200 preserve-3d">
+      {/* Root Persistent Full-Page WebGL 3D Scene */}
+      <Suspense fallback={null}>
+        <PersistentScene />
+      </Suspense>
+
       {/* Section 1: Hero Section */}
       <HeroSection />
 

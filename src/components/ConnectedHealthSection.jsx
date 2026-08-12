@@ -1,10 +1,8 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Moon, Heart, Activity, Dumbbell } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import ConnectedHealthScreen from './PhoneScreens/ConnectedHealthScreen';
-
-const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function ConnectedHealthSection() {
   const [activeSignal, setActiveSignal] = useState('Sleep');
@@ -30,20 +28,13 @@ export default function ConnectedHealthSection() {
     <motion.section
       aria-label="Connected Health Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d"
+      className="relative w-full bg-transparent text-white py-24 overflow-hidden gpu-accelerated preserve-3d"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
         <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
         </svg>
-      </div>
-
-      {/* Hero Three.js Shader Background Animation */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Suspense fallback={null}>
-          <BackgroundCanvas />
-        </Suspense>
       </div>
 
       {/* Holographic Bloom Halo */}
