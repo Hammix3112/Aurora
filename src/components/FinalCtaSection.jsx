@@ -1,25 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { ArrowRight, Utensils, Dumbbell, Heart } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import LunchLogScreen from './PhoneScreens/LunchLogScreen';
-import { use3DTilt } from '../hooks/use3DTilt';
 
-function Interactive3DBadge({ children, className = '', depthZ = 16 }) {
-  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(8, 1.08, depthZ);
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`relative preserve-3d cursor-pointer ${className}`}
-      style={tiltStyle}
-    >
-      <div className="absolute inset-0 pointer-events-none rounded-full z-40" style={shineStyle}></div>
-      {children}
-    </div>
-  );
-}
+const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function FinalCtaSection() {
   const { scrollYProgress } = useScroll();
@@ -36,7 +21,7 @@ export default function FinalCtaSection() {
     <motion.section
       aria-label="Final Call to Action"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full min-h-screen bg-transparent overflow-hidden flex flex-col justify-between pt-12 pb-8 gpu-accelerated preserve-3d"
+      className="relative w-full min-h-screen bg-[#05070F] overflow-hidden flex flex-col justify-between pt-12 pb-8 gpu-accelerated preserve-3d"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -45,55 +30,59 @@ export default function FinalCtaSection() {
         </svg>
       </div>
 
+      {/* Hero Three.js Shader Background Animation */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={null}>
+          <BackgroundCanvas />
+        </Suspense>
+      </div>
+
       {/* Volumetric Blue & Purple Rays Converging Toward Phone */}
       <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-gradient-to-tr from-cyan-500/25 via-indigo-600/20 to-purple-800/20 rounded-full blur-[150px] pointer-events-none z-0"></div>
       <div className="absolute right-0 top-10 w-[600px] h-[600px] bg-gradient-to-bl from-cyan-600/20 via-teal-500/15 to-transparent rounded-full blur-[130px] pointer-events-none z-0"></div>
 
-      {/* Top Category Indicators with Interactive 3D Tilt */}
+      {/* Top Category Indicators */}
       <div className="relative z-10 flex items-center justify-around max-w-2xl mx-auto w-full mb-8 px-6 preserve-3d pt-6">
         {/* Food */}
         <motion.div
           animate={{ y: [-3, 3, -3] }}
           transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="flex flex-col items-center gap-1.5 group cursor-pointer"
         >
-          <Interactive3DBadge className="flex flex-col items-center gap-1.5 group">
-            <div className="w-11 h-11 rounded-full bg-slate-900/90 border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:border-amber-400 transition-all duration-300 shadow-lg shadow-amber-950/40">
-              <Utensils className="w-4.5 h-4.5" aria-hidden="true" />
-            </div>
-            <span className="text-[10px] tracking-widest font-semibold text-slate-300 uppercase group-hover:text-amber-300 transition-colors font-grotesk">
-              FOOD
-            </span>
-          </Interactive3DBadge>
+          <div className="w-11 h-11 rounded-full bg-slate-900/90 border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:border-amber-400 transition-all duration-300 shadow-lg shadow-amber-950/40">
+            <Utensils className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <span className="text-[10px] tracking-widest font-semibold text-slate-300 uppercase group-hover:text-amber-300 transition-colors font-grotesk">
+            FOOD
+          </span>
         </motion.div>
 
         {/* Workouts */}
         <motion.div
           animate={{ y: [3, -3, 3] }}
           transition={{ duration: 4.6, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+          className="flex flex-col items-center gap-1.5 group cursor-pointer"
         >
-          <Interactive3DBadge className="flex flex-col items-center gap-1.5 group">
-            <div className="w-11 h-11 rounded-full bg-slate-900/90 border border-purple-500/40 flex items-center justify-center text-purple-400 group-hover:border-purple-400 transition-all duration-300 shadow-lg shadow-purple-950/40">
-              <Dumbbell className="w-4.5 h-4.5" aria-hidden="true" />
-            </div>
-            <span className="text-[10px] tracking-widest font-semibold text-slate-300 uppercase group-hover:text-purple-300 transition-colors font-grotesk">
-              WORKOUTS
-            </span>
-          </Interactive3DBadge>
+          <div className="w-11 h-11 rounded-full bg-slate-900/90 border border-purple-500/40 flex items-center justify-center text-purple-400 group-hover:border-purple-400 transition-all duration-300 shadow-lg shadow-purple-950/40">
+            <Dumbbell className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <span className="text-[10px] tracking-widest font-semibold text-slate-300 uppercase group-hover:text-purple-300 transition-colors font-grotesk">
+            WORKOUTS
+          </span>
         </motion.div>
 
         {/* Connected Health */}
         <motion.div
           animate={{ y: [-3, 3, -3] }}
           transition={{ duration: 5.0, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+          className="flex flex-col items-center gap-1.5 group cursor-pointer"
         >
-          <Interactive3DBadge className="flex flex-col items-center gap-1.5 group">
-            <div className="w-11 h-11 rounded-full bg-slate-900/90 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 transition-all duration-300 shadow-lg shadow-cyan-950/40">
-              <Heart className="w-4.5 h-4.5" aria-hidden="true" />
-            </div>
-            <span className="text-[10px] tracking-widest font-semibold text-slate-300 uppercase group-hover:text-cyan-300 transition-colors font-grotesk">
-              CONNECTED HEALTH
-            </span>
-          </Interactive3DBadge>
+          <div className="w-11 h-11 rounded-full bg-slate-900/90 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 transition-all duration-300 shadow-lg shadow-cyan-950/40">
+            <Heart className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <span className="text-[10px] tracking-widest font-semibold text-slate-300 uppercase group-hover:text-cyan-300 transition-colors font-grotesk">
+            CONNECTED HEALTH
+          </span>
         </motion.div>
       </div>
 

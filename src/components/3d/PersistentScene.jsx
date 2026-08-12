@@ -74,34 +74,36 @@ export default function PersistentScene() {
       powerPreference: 'high-performance',
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setClearColor(0x030509, 1);
+    renderer.setClearColor(0x050711, 1);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x030509, 0.015);
+    scene.fog = new THREE.FogExp2(0x050711, 0.008);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 50);
 
     let W = window.innerWidth, H = window.innerHeight;
 
-    // Palette Definition
-    const PALETTE = [
-      new THREE.Color(0x3d8bff), // electric blue
-      new THREE.Color(0x33d6e0), // cyan
-      new THREE.Color(0x8a5cf6), // violet
-      new THREE.Color(0xd4f933), // lime
-      new THREE.Color(0xe9f1ff), // soft white
-    ];
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0x8a5cf6, 2.5);
+    dirLight1.position.set(30, 40, 50);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x33d6e0, 2.0);
+    dirLight2.position.set(-30, -40, 30);
+    scene.add(dirLight2);
 
     // Groups
     const gStars = new THREE.Group();
     const gDust = new THREE.Group();
     const gNebula = new THREE.Group();
     const gGeometry = new THREE.Group();
-    const gStreams = new THREE.Group();
-    [gStars, gDust, gNebula, gGeometry, gStreams].forEach((g) => scene.add(g));
+    [gStars, gDust, gNebula, gGeometry].forEach((g) => scene.add(g));
 
-    // Mouse Tracking
+    // Mouse & Scroll State
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
     let scrollYProgress = 0;
 
@@ -118,18 +120,18 @@ export default function PersistentScene() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    // 1. Starfield (2,200 Stars)
-    const countStars = 2200;
+    // 1. Starfield (3,000 Bright Stars)
+    const countStars = 3000;
     const posStars = new Float32Array(countStars * 3);
     const rndStars = new Float32Array(countStars * 2);
     for (let i = 0; i < countStars; i++) {
-      const r = 250 + Math.random() * 450;
+      const r = 200 + Math.random() * 400;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
       posStars[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       posStars[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      posStars[i * 3 + 2] = r * Math.cos(phi) - 150;
-      rndStars[i * 2] = 0.6 + Math.random() * 1.6;
+      posStars[i * 3 + 2] = r * Math.cos(phi) - 100;
+      rndStars[i * 2] = 0.8 + Math.random() * 2.2;
       rndStars[i * 2 + 1] = Math.random() * Math.PI * 2;
     }
     const geoStars = new THREE.BufferGeometry();
@@ -145,9 +147,9 @@ export default function PersistentScene() {
         varying float vTwinkle;
         uniform float uTime;
         void main(){
-          vTwinkle = 0.5 + 0.5 * sin(uTime * 0.8 + aRnd.y * 6.0);
+          vTwinkle = 0.5 + 0.5 * sin(uTime * 1.2 + aRnd.y * 6.0);
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = aRnd.x * (200.0 / -mv.z);
+          gl_PointSize = aRnd.x * (240.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: `
@@ -155,22 +157,22 @@ export default function PersistentScene() {
         void main(){
           float d = length(gl_PointCoord - 0.5);
           float a = smoothstep(0.5, 0.0, d) * vTwinkle;
-          gl_FragColor = vec4(vec3(0.85, 0.92, 1.0), a * 0.85);
+          gl_FragColor = vec4(vec3(0.9, 0.95, 1.0), a * 0.95);
         }`,
     });
     gStars.add(new THREE.Points(geoStars, matStars));
 
-    // 2. Ambient Dust (900 Particles)
-    const countDust = 900;
+    // 2. Ambient Floating Dust
+    const countDust = 1200;
     const posDust = new Float32Array(countDust * 3);
     const rndDust = new Float32Array(countDust * 3);
     for (let i = 0; i < countDust; i++) {
-      posDust[i * 3] = (Math.random() - 0.5) * 160;
-      posDust[i * 3 + 1] = (Math.random() - 0.5) * 120;
-      posDust[i * 3 + 2] = (Math.random() - 0.5) * 80;
-      rndDust[i * 3] = 0.3 + Math.random() * 0.7;
+      posDust[i * 3] = (Math.random() - 0.5) * 180;
+      posDust[i * 3 + 1] = (Math.random() - 0.5) * 300;
+      posDust[i * 3 + 2] = (Math.random() - 0.5) * 100;
+      rndDust[i * 3] = 0.4 + Math.random() * 1.2;
       rndDust[i * 3 + 1] = Math.random() * Math.PI * 2;
-      rndDust[i * 3 + 2] = 0.2 + Math.random() * 0.5;
+      rndDust[i * 3 + 2] = 0.2 + Math.random() * 0.6;
     }
     const geoDust = new THREE.BufferGeometry();
     geoDust.setAttribute('position', new THREE.BufferAttribute(posDust, 3));
@@ -186,11 +188,11 @@ export default function PersistentScene() {
         uniform float uTime;
         void main(){
           vec3 p = position;
-          p.y += sin(uTime * aRnd.z + aRnd.y) * 3.0;
-          p.x += cos(uTime * aRnd.z * 0.7 + aRnd.y) * 2.0;
-          vA = 0.4 + 0.4 * sin(uTime * 1.3 + aRnd.y);
+          p.y += sin(uTime * aRnd.z + aRnd.y) * 4.0;
+          p.x += cos(uTime * aRnd.z * 0.7 + aRnd.y) * 3.0;
+          vA = 0.4 + 0.4 * sin(uTime * 1.5 + aRnd.y);
           vec4 mv = modelViewMatrix * vec4(p, 1.0);
-          gl_PointSize = aRnd.x * (70.0 / -mv.z);
+          gl_PointSize = aRnd.x * (90.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: `
@@ -198,7 +200,7 @@ export default function PersistentScene() {
         void main(){
           float d = length(gl_PointCoord - 0.5);
           float a = smoothstep(0.5, 0.0, d);
-          gl_FragColor = vec4(vec3(0.6, 0.8, 1.0), a * vA * 0.4);
+          gl_FragColor = vec4(vec3(0.65, 0.85, 1.0), a * vA * 0.6);
         }`,
     });
     gDust.add(new THREE.Points(geoDust, matDust));
@@ -211,8 +213,8 @@ export default function PersistentScene() {
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
-        uColor: { value: PALETTE[2] },
-        uOpac: { value: 0.15 },
+        uColor: { value: new THREE.Color(0x8a5cf6) },
+        uOpac: { value: 0.25 },
         uScroll: { value: 0 },
       },
       vertexShader: `
@@ -228,73 +230,121 @@ export default function PersistentScene() {
         uniform float uTime, uOpac, uScroll;
         uniform vec3 uColor;
         void main(){
-          vec2 p = vUv * 3.0 + vec2(0.0, uScroll * 2.0);
-          float n = fbm(vec3(p * 1.4, uTime * 0.03));
+          vec2 p = vUv * 3.0 + vec2(0.0, uScroll * 3.0);
+          float n = fbm(vec3(p * 1.5, uTime * 0.04));
           n = smoothstep(0.05, 0.75, n);
           float edge = smoothstep(0.0, 0.35, vUv.x) * smoothstep(1.0, 0.65, vUv.x);
           edge *= smoothstep(0.0, 0.3, vUv.y) * smoothstep(1.0, 0.7, vUv.y);
           gl_FragColor = vec4(uColor, n * edge * uOpac);
         }`,
     });
-    const nebulaGeo = new THREE.PlaneGeometry(160, 100);
+    const nebulaGeo = new THREE.PlaneGeometry(200, 400);
     const nebulaMesh = new THREE.Mesh(nebulaGeo, nebulaMat);
-    nebulaMesh.position.set(0, 0, -80);
+    nebulaMesh.position.set(0, -100, -90);
     gNebula.add(nebulaMesh);
 
-    // 4. 3D Floating Glass & Wireframe Geometry Objects (Oryzo.ai Style)
+    // 4. DRAMATIC MASSIVE 3D OBJECTS (Oryzo.ai Centerpiece Level)
     const objects = [];
 
-    // Object A: Hero Wireframe Octahedron
-    const geoOct = new THREE.OctahedronGeometry(6, 0);
-    const matOctWire = new THREE.MeshBasicMaterial({ color: 0x8a5cf6, wireframe: true, transparent: true, opacity: 0.4 });
-    const matOctSolid = new THREE.MeshPhysicalMaterial({ color: 0x3d8bff, roughness: 0.2, transmission: 0.8, thickness: 1.5, transparent: true, opacity: 0.3 });
-    const meshOct = new THREE.Mesh(geoOct, matOctWire);
-    const meshOctSolid = new THREE.Mesh(geoOct, matOctSolid);
-    meshOct.add(meshOctSolid);
-    meshOct.position.set(-18, 12, -10);
-    gGeometry.add(meshOct);
-    objects.push({ mesh: meshOct, rotX: 0.005, rotY: 0.008, scrollTarget: 0.0, scale: 1 });
+    // --- Object 1: Hero Section - Massive Dual Wireframe & Glowing Glass Octahedron ---
+    const geoOct = new THREE.OctahedronGeometry(14, 0);
+    const matOctWire = new THREE.MeshBasicMaterial({ color: 0xc084fc, wireframe: true, transparent: true, opacity: 0.6 });
+    const matOctCore = new THREE.MeshPhysicalMaterial({
+      color: 0x3d8bff,
+      roughness: 0.1,
+      metalness: 0.1,
+      transmission: 0.9,
+      thickness: 3.0,
+      transparent: true,
+      opacity: 0.45,
+    });
+    const meshOctWire = new THREE.Mesh(geoOct, matOctWire);
+    const meshOctCore = new THREE.Mesh(new THREE.OctahedronGeometry(9, 0), matOctCore);
+    meshOctWire.add(meshOctCore);
+    meshOctWire.position.set(-25, 10, -15);
+    gGeometry.add(meshOctWire);
+    objects.push({ mesh: meshOctWire, rotX: 0.006, rotY: 0.009, rotZ: 0.003 });
 
-    // Object B: Section 4 Connected Health Holographic Cube
-    const geoCube = new THREE.BoxGeometry(7, 7, 7);
-    const matCubeWire = new THREE.MeshBasicMaterial({ color: 0x33d6e0, wireframe: true, transparent: true, opacity: 0.45 });
-    const meshCube = new THREE.Mesh(geoCube, matCubeWire);
-    meshCube.position.set(22, -25, -15);
+    // --- Object 2: Daily Read Section - Massive Translucent Glass Sphere with Inner Rings ---
+    const geoSphere = new THREE.IcosahedronGeometry(13, 2);
+    const matSphere = new THREE.MeshPhysicalMaterial({
+      color: 0x818cf8,
+      roughness: 0.15,
+      transmission: 0.85,
+      thickness: 2.5,
+      transparent: true,
+      opacity: 0.5,
+      wireframe: true,
+    });
+    const meshSphere = new THREE.Mesh(geoSphere, matSphere);
+    meshSphere.position.set(28, -35, -12);
+    gGeometry.add(meshSphere);
+    objects.push({ mesh: meshSphere, rotX: 0.005, rotY: 0.007, rotZ: 0.004 });
+
+    // --- Object 3: Effortless Logging Section - Massive Dual Glass Torus Ring ---
+    const geoTorus1 = new THREE.TorusGeometry(12, 1.8, 24, 80);
+    const matTorus1 = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.55 });
+    const meshTorus1 = new THREE.Mesh(geoTorus1, matTorus1);
+    meshTorus1.position.set(-26, -80, -10);
+    gGeometry.add(meshTorus1);
+    objects.push({ mesh: meshTorus1, rotX: 0.008, rotY: 0.005, rotZ: 0.006 });
+
+    // --- Object 4: Connected Health Section - Massive Holographic Cyber Cube ---
+    const geoCube = new THREE.BoxGeometry(16, 16, 16);
+    const matCube = new THREE.MeshBasicMaterial({ color: 0x2dd4bf, wireframe: true, transparent: true, opacity: 0.6 });
+    const meshCube = new THREE.Mesh(geoCube, matCube);
+    meshCube.position.set(26, -125, -12);
     gGeometry.add(meshCube);
-    objects.push({ mesh: meshCube, rotX: 0.007, rotY: 0.006, scrollTarget: 0.35, scale: 1 });
+    objects.push({ mesh: meshCube, rotX: 0.007, rotY: 0.009, rotZ: 0.005 });
 
-    // Object C: Section 6 Workout Torus Knot
-    const geoKnot = new THREE.TorusKnotGeometry(4.5, 1.2, 100, 16);
-    const matKnot = new THREE.MeshPhysicalMaterial({ color: 0xc084fc, roughness: 0.1, transmission: 0.85, thickness: 2.0, transparent: true, opacity: 0.5, wireframe: true });
+    // --- Object 5: Ask Data Section - Glowing Glass Prism Dodecahedron ---
+    const geoDodeca = new THREE.DodecahedronGeometry(13, 0);
+    const matDodeca = new THREE.MeshPhysicalMaterial({
+      color: 0xc084fc,
+      roughness: 0.1,
+      transmission: 0.9,
+      thickness: 2.8,
+      transparent: true,
+      opacity: 0.5,
+      wireframe: true,
+    });
+    const meshDodeca = new THREE.Mesh(geoDodeca, matDodeca);
+    meshDodeca.position.set(-25, -170, -10);
+    gGeometry.add(meshDodeca);
+    objects.push({ mesh: meshDodeca, rotX: 0.005, rotY: 0.008, rotZ: 0.004 });
+
+    // --- Object 6: Workout Intelligence Section - Pulsating Glass Torus Knot ---
+    const geoKnot = new THREE.TorusKnotGeometry(10, 2.5, 120, 20);
+    const matKnot = new THREE.MeshBasicMaterial({ color: 0xf43f5e, wireframe: true, transparent: true, opacity: 0.55 });
     const meshKnot = new THREE.Mesh(geoKnot, matKnot);
-    meshKnot.position.set(-20, -60, -12);
+    meshKnot.position.set(25, -215, -10);
     gGeometry.add(meshKnot);
-    objects.push({ mesh: meshKnot, rotX: 0.009, rotY: 0.005, scrollTarget: 0.6, scale: 1 });
+    objects.push({ mesh: meshKnot, rotX: 0.009, rotY: 0.006, rotZ: 0.007 });
 
-    // Object D: Section 8 Reset Studio Breathing Torus Ring
-    const geoRing = new THREE.TorusGeometry(8, 1.2, 32, 100);
-    const matRing = new THREE.MeshBasicMaterial({ color: 0x818cf8, wireframe: true, transparent: true, opacity: 0.4 });
-    const meshRing = new THREE.Mesh(geoRing, matRing);
-    meshRing.position.set(0, -90, -10);
-    gGeometry.add(meshRing);
-    objects.push({ mesh: meshRing, rotX: 0.004, rotY: 0.01, scrollTarget: 0.8, scale: 1 });
+    // --- Object 7: Reset Studio Section - Breathing Concentric Portal Rings ---
+    const geoRingBig = new THREE.TorusGeometry(18, 1.2, 16, 100);
+    const matRingBig = new THREE.MeshBasicMaterial({ color: 0xa855f7, wireframe: true, transparent: true, opacity: 0.5 });
+    const meshRingBig = new THREE.Mesh(geoRingBig, matRingBig);
+    meshRingBig.position.set(0, -260, -8);
+    gGeometry.add(meshRingBig);
+    objects.push({ mesh: meshRingBig, rotX: 0.004, rotY: 0.011, rotZ: 0.002 });
 
-    // Object E: Section 10 Final CTA Converging Glass Icosahedron
-    const geoIco = new THREE.IcosahedronGeometry(7, 1);
-    const matIco = new THREE.MeshBasicMaterial({ color: 0xd4f933, wireframe: true, transparent: true, opacity: 0.45 });
-    const meshIco = new THREE.Mesh(geoIco, matIco);
-    meshIco.position.set(18, -125, -8);
-    gGeometry.add(meshIco);
-    objects.push({ mesh: meshIco, rotX: 0.006, rotY: 0.007, scrollTarget: 0.95, scale: 1 });
+    // --- Object 8: Final CTA Section - Massive Converging Glass Icosahedron ---
+    const geoFinal = new THREE.IcosahedronGeometry(18, 1);
+    const matFinal = new THREE.MeshBasicMaterial({ color: 0xd4f933, wireframe: true, transparent: true, opacity: 0.6 });
+    const meshFinal = new THREE.Mesh(geoFinal, matFinal);
+    meshFinal.position.set(0, -310, -5);
+    gGeometry.add(meshFinal);
+    objects.push({ mesh: meshFinal, rotX: 0.006, rotY: 0.008, rotZ: 0.005 });
 
-    // 5. Post-Processing Setup
+    // 5. Post-Processing Setup (ACES Bloom)
     const quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const quadGeo = new THREE.PlaneGeometry(2, 2);
     const quadScene = new THREE.Scene();
     let quadMesh = null;
 
     const brightMat = new THREE.ShaderMaterial({
-      uniforms: { tDiffuse: { value: null }, uThreshold: { value: 0.35 } },
+      uniforms: { tDiffuse: { value: null }, uThreshold: { value: 0.3 } },
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy,0.0,1.0); }`,
       fragmentShader: `
         varying vec2 vUv; uniform sampler2D tDiffuse; uniform float uThreshold;
@@ -336,10 +386,10 @@ export default function PersistentScene() {
         tBloom: { value: null },
         uTime: { value: 0 },
         uRes: { value: new THREE.Vector2(1, 1) },
-        uBloomStrength: { value: 0.85 },
-        uVignette: { value: 0.55 },
-        uAberration: { value: 0.0014 },
-        uGrain: { value: 0.03 },
+        uBloomStrength: { value: 1.1 },
+        uVignette: { value: 0.5 },
+        uAberration: { value: 0.0018 },
+        uGrain: { value: 0.025 },
       },
       vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy,0.0,1.0); }`,
       fragmentShader: `
@@ -464,30 +514,29 @@ export default function PersistentScene() {
       compositeMat.uniforms.uTime.value = t;
 
       // Mouse Parallax Lerp
-      mouse.x += (mouse.tx - mouse.x) * 0.04;
-      mouse.y += (mouse.ty - mouse.y) * 0.04;
+      mouse.x += (mouse.tx - mouse.x) * 0.05;
+      mouse.y += (mouse.ty - mouse.y) * 0.05;
 
-      // 3D Camera Travel Driven by Scroll
-      const targetCamY = -scrollYProgress * 135;
-      camera.position.y += (targetCamY - camera.position.y) * 0.06;
-      camera.position.x = mouse.x * 2.5;
-      camera.rotation.z = mouse.x * 0.02;
+      // CONTINUOUS DRAMATIC CAMERA TRAVEL IN 3D SPACE
+      const targetCamY = -scrollYProgress * 320;
+      camera.position.y += (targetCamY - camera.position.y) * 0.08;
+      camera.position.x = mouse.x * 4.0;
+      camera.rotation.z = mouse.x * 0.03;
 
-      // Rotate 3D Geometry Objects
+      // Rotate 3D Objects
       objects.forEach((obj) => {
         obj.mesh.rotation.x += obj.rotX;
         obj.mesh.rotation.y += obj.rotY;
-        
-        // Gentle pulse breathing
-        if (obj.mesh === meshRing) {
-          const pulse = 1 + Math.sin(t * 1.5) * 0.08;
+        obj.mesh.rotation.z += obj.rotZ;
+
+        if (obj.mesh === meshRingBig) {
+          const pulse = 1 + Math.sin(t * 2.0) * 0.12;
           obj.mesh.scale.set(pulse, pulse, pulse);
         }
       });
 
-      gStars.position.y = camera.position.y * 0.9;
-      gDust.position.y = camera.position.y * 0.8;
-      nebulaMesh.position.y = camera.position.y * 0.95;
+      gStars.position.y = camera.position.y * 0.92;
+      gDust.position.y = camera.position.y * 0.85;
 
       renderComposited();
     };

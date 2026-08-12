@@ -3,23 +3,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { BookOpen, Clock, Heart, Footprints, Dumbbell, Moon, Utensils } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import InsightsScreen from './PhoneScreens/InsightsScreen';
-import { use3DTilt } from '../hooks/use3DTilt';
-
-function Interactive3DTimelineCard({ children, className = '', depthZ = 30 }) {
-  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(5, 1.015, depthZ);
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`relative preserve-3d cursor-pointer ${className}`}
-      style={tiltStyle}
-    >
-      <div className="absolute inset-0 pointer-events-none rounded-2xl z-40" style={shineStyle}></div>
-      {children}
-    </div>
-  );
-}
 
 export default function HistorySection() {
   const { scrollYProgress } = useScroll();
@@ -147,7 +130,7 @@ export default function HistorySection() {
           </motion.div>
         </div>
 
-        {/* Weekly Paper Timeline Log Breakdown Card with Interactive 3D Tilt */}
+        {/* Weekly Paper Timeline Log Breakdown Card */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -156,7 +139,7 @@ export default function HistorySection() {
           style={{ rotateX: cardRotateX }}
           className="preserve-3d"
         >
-          <Interactive3DTimelineCard className="parchment-card rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-x-auto border border-amber-200/90 transition-all duration-500">
+          <div className="parchment-card rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-x-auto border border-amber-200/90 transition-all duration-500">
             <div className="flex items-center justify-between border-b border-amber-900/10 pb-3 mb-4 text-xs font-grotesk">
               <span className="text-amber-900/60 font-semibold tracking-wider uppercase text-[10px]">APRIL</span>
               <span className="text-purple-700 font-mono text-[10px] font-semibold">APR 22 — APR 28</span>
@@ -167,19 +150,16 @@ export default function HistorySection() {
                 const IconComp = d.icon;
                 return (
                   <div key={d.date} className="px-2 text-center space-y-3 preserve-3d" style={{ transform: 'translateZ(10px)' }}>
-                    {/* Date Header */}
                     <div>
                       <span className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold block">{d.day}</span>
                       <span className="text-base font-bold text-slate-900 font-grotesk">{d.date}</span>
                     </div>
 
-                    {/* Meals row */}
                     <div className="flex items-center justify-center gap-1 text-[10px] text-amber-700 bg-amber-50/90 rounded-lg py-1 shadow-xs">
                       <Utensils className="w-3 h-3 text-amber-600" aria-hidden="true" />
                       <span>Meals</span>
                     </div>
 
-                    {/* Sleep row */}
                     <div className="space-y-0.5">
                       <div className="flex items-center justify-center gap-1 text-[10px] text-purple-700">
                         <Moon className="w-3 h-3 text-purple-600" aria-hidden="true" />
@@ -190,7 +170,6 @@ export default function HistorySection() {
                       </div>
                     </div>
 
-                    {/* Recovery score */}
                     <div className="space-y-0.5">
                       <div className="flex items-center justify-center gap-1 text-[10px]">
                         <Heart className={`w-3 h-3 ${d.recColor}`} aria-hidden="true" />
@@ -199,13 +178,11 @@ export default function HistorySection() {
                       <span className={`text-[9px] block ${d.recColor}`}>{d.recLabel}</span>
                     </div>
 
-                    {/* Steps */}
                     <div className="flex items-center justify-center gap-1 text-[10px] text-slate-700 font-mono">
                       <Footprints className="w-3 h-3 text-teal-600" aria-hidden="true" />
                       <span>{d.steps}</span>
                     </div>
 
-                    {/* Workout */}
                     <div className="inline-flex items-center gap-1 bg-purple-50 text-purple-800 text-[9px] px-2 py-0.5 rounded-full border border-purple-200 shadow-xs">
                       <IconComp className="w-2.5 h-2.5" aria-hidden="true" />
                       <span>{d.workout}</span>
@@ -214,7 +191,7 @@ export default function HistorySection() {
                 );
               })}
             </div>
-          </Interactive3DTimelineCard>
+          </div>
         </motion.div>
       </div>
 

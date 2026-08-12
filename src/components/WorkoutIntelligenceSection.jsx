@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Dumbbell } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import WorkoutDetailScreen from './PhoneScreens/WorkoutDetailScreen';
+
+const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function WorkoutIntelligenceSection() {
   const { scrollYProgress } = useScroll();
@@ -20,13 +22,20 @@ export default function WorkoutIntelligenceSection() {
     <motion.section
       aria-label="Workout Intelligence Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-transparent text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
         <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
         </svg>
+      </div>
+
+      {/* Hero Three.js Shader Background Animation */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={null}>
+          <BackgroundCanvas />
+        </Suspense>
       </div>
 
       {/* Radiant Glowing Orbs behind Phone */}

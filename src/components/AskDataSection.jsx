@@ -3,23 +3,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Utensils, Footprints, Check } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import ChatScreen from './PhoneScreens/ChatScreen';
-import { use3DTilt } from '../hooks/use3DTilt';
-
-function Interactive3DCard({ children, className = '', depthZ = 24 }) {
-  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(6, 1.02, depthZ);
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`relative preserve-3d cursor-pointer ${className}`}
-      style={tiltStyle}
-    >
-      <div className="absolute inset-0 pointer-events-none rounded-2xl z-40" style={shineStyle}></div>
-      {children}
-    </div>
-  );
-}
 
 export default function AskDataSection() {
   const { scrollYProgress } = useScroll();
@@ -89,37 +72,36 @@ export default function AskDataSection() {
               transition={{
                 y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
               }}
+              className="bg-white/90 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
             >
-              <Interactive3DCard className="bg-white/95 backdrop-blur-md border border-purple-200/90 rounded-2xl p-3 shadow-lg group hover:border-purple-400 transition-all duration-300">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0 mt-0.5">
-                      <Utensils className="w-3.5 h-3.5" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-bold text-slate-900 leading-snug">
-                        Actually, that was two servings.
-                      </p>
-                      <span className="text-[9px] text-slate-600 font-mono">Lunch · 12:41 PM</span>
-                    </div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-7 h-7 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0 mt-0.5">
+                    <Utensils className="w-3.5 h-3.5" aria-hidden="true" />
                   </div>
-
-                  <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-amber-200 shrink-0">
-                    <img
-                      src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
-                      alt="Meal serving"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-teal-500 text-white flex items-center justify-center text-[6px] font-bold">
-                      <Check className="w-2 h-2" aria-hidden="true" />
-                    </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-slate-900 leading-snug">
+                      Actually, that was two servings.
+                    </p>
+                    <span className="text-[9px] text-slate-600 font-mono">Lunch · 12:41 PM</span>
                   </div>
                 </div>
-              </Interactive3DCard>
+
+                <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-amber-200 shrink-0">
+                  <img
+                    src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80"
+                    alt="Meal serving"
+                    width="40"
+                    height="40"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-teal-500 text-white flex items-center justify-center text-[6px] font-bold">
+                    <Check className="w-2 h-2" aria-hidden="true" />
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
             {/* Bottom Context Card */}
@@ -130,20 +112,19 @@ export default function AskDataSection() {
               transition={{
                 y: { duration: 5.0, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
               }}
+              className="bg-white/90 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-cyan-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
             >
-              <Interactive3DCard className="bg-white/95 backdrop-blur-md border border-cyan-200/90 rounded-2xl p-3 shadow-lg group hover:border-cyan-400 transition-all duration-300">
-                <div className="flex items-start gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0 mt-0.5">
-                    <Footprints className="w-3.5 h-3.5" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-bold text-slate-900 leading-snug">
-                      How did yesterday's workout affect today?
-                    </p>
-                    <span className="text-[9px] text-slate-600 font-mono">11:32 AM</span>
-                  </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-7 h-7 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0 mt-0.5">
+                  <Footprints className="w-3.5 h-3.5" aria-hidden="true" />
                 </div>
-              </Interactive3DCard>
+                <div>
+                  <p className="text-[11px] font-bold text-slate-900 leading-snug">
+                    How did yesterday's workout affect today?
+                  </p>
+                  <span className="text-[9px] text-slate-600 font-mono">11:32 AM</span>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>

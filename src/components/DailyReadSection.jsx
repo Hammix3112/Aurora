@@ -3,23 +3,6 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Utensils, Moon, Heart, Footprints } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import TodayCalorieScreen from './PhoneScreens/TodayCalorieScreen';
-import { use3DTilt } from '../hooks/use3DTilt';
-
-function Interactive3DCard({ children, className = '', depthZ = 24 }) {
-  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(6, 1.02, depthZ);
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`relative preserve-3d cursor-pointer ${className}`}
-      style={tiltStyle}
-    >
-      <div className="absolute inset-0 pointer-events-none rounded-2xl z-40" style={shineStyle}></div>
-      {children}
-    </div>
-  );
-}
 
 export default function DailyReadSection() {
   const { scrollYProgress } = useScroll();
@@ -119,7 +102,7 @@ export default function DailyReadSection() {
         >
           {/* Signal 1: BREAKFAST */}
           <motion.div variants={cardVariants(0)}>
-            <Interactive3DCard className="flex items-center justify-between bg-white/95 backdrop-blur-md p-2.5 px-3 rounded-2xl border border-purple-200/90 shadow-lg group hover:border-purple-400 transition-all duration-300">
+            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-2.5 px-3 rounded-2xl border border-purple-200/90 shadow-lg group hover:border-purple-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
                   <Utensils className="w-4 h-4" aria-hidden="true" />
@@ -150,12 +133,12 @@ export default function DailyReadSection() {
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,20 Q40,20 80,0" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeDasharray="3 3" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
 
           {/* Signal 2: SLEEP */}
           <motion.div variants={cardVariants(1)}>
-            <Interactive3DCard className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-purple-200/90 shadow-lg space-y-2 group hover:border-purple-400 transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-purple-200/90 shadow-lg space-y-2 group hover:border-purple-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
                   <Moon className="w-4 h-4" aria-hidden="true" />
@@ -184,12 +167,12 @@ export default function DailyReadSection() {
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,20 Q40,20 80,10" fill="none" stroke="#818CF8" strokeWidth="1.5" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
 
           {/* Signal 3: RECOVERY */}
           <motion.div variants={cardVariants(2)}>
-            <Interactive3DCard className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-teal-200/90 shadow-lg space-y-1 group hover:border-teal-400 transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-teal-200/90 shadow-lg space-y-1 group hover:border-teal-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-teal-100 border border-teal-300 flex items-center justify-center text-teal-700 shrink-0">
                   <Heart className="w-4 h-4" aria-hidden="true" />
@@ -211,12 +194,12 @@ export default function DailyReadSection() {
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,20 Q40,20 80,20" fill="none" stroke="#2DD4BF" strokeWidth="1.5" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
 
           {/* Signal 4: WORKOUT */}
           <motion.div variants={cardVariants(3)}>
-            <Interactive3DCard className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-cyan-200/90 shadow-lg space-y-1 group hover:border-cyan-400 transition-all duration-300">
+            <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-cyan-200/90 shadow-lg space-y-1 group hover:border-cyan-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0">
                   <Footprints className="w-4 h-4" aria-hidden="true" />
@@ -244,7 +227,7 @@ export default function DailyReadSection() {
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,20 Q40,20 80,30" fill="none" stroke="#38BDF8" strokeWidth="1.5" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
         </motion.div>
 

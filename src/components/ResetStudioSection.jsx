@@ -1,26 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import PhoneMockup from './PhoneMockup';
 import ResetStudioScreen from './PhoneScreens/ResetStudioScreen';
 import ResetPortalCanvas from './ResetPortalCanvas';
-import { use3DTilt } from '../hooks/use3DTilt';
 
-function Interactive3DButton({ children, onClick, className = '', depthZ = 16 }) {
-  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(5, 1.05, depthZ);
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      className={`relative preserve-3d cursor-pointer ${className}`}
-      style={tiltStyle}
-    >
-      <div className="absolute inset-0 pointer-events-none rounded-full z-40" style={shineStyle}></div>
-      {children}
-    </div>
-  );
-}
+const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function ResetStudioSection() {
   const [activeTab, setActiveTab] = useState('Unwind');
@@ -40,13 +24,20 @@ export default function ResetStudioSection() {
   return (
     <motion.section
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-transparent text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
         <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
         </svg>
+      </div>
+
+      {/* Hero Three.js Shader Background Animation */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={null}>
+          <BackgroundCanvas />
+        </Suspense>
       </div>
 
       {/* Organic Expanding Concentric Portal Wave Canvas (Preserved Hypnotic Breathwork Animation) */}
@@ -88,7 +79,7 @@ export default function ResetStudioSection() {
             Breathwork for stress, sleep and focus — guided by where you are today.
           </p>
 
-          {/* Mode Selection Row (Unwind | Sleep | Focus) with 3D Tilt */}
+          {/* Mode Selection Row (Unwind | Sleep | Focus) */}
           <div className="flex items-center gap-8 pt-8 preserve-3d">
             {modes.map((mode, idx) => {
               const IconComp = mode.icon;
@@ -96,7 +87,8 @@ export default function ResetStudioSection() {
               return (
                 <React.Fragment key={mode.name}>
                   {idx > 0 && <div className="w-[1px] h-10 bg-slate-800/80"></div>}
-                  <Interactive3DButton
+                  <button
+                    type="button"
                     onClick={() => setActiveTab(mode.name)}
                     className="flex flex-col items-center gap-3 group transition-all duration-300"
                   >
@@ -116,7 +108,7 @@ export default function ResetStudioSection() {
                     >
                       {mode.name}
                     </span>
-                  </Interactive3DButton>
+                  </button>
                 </React.Fragment>
               );
             })}

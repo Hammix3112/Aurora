@@ -3,23 +3,6 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Mic, Camera, MessageSquare, Edit3, CheckCheck } from 'lucide-react';
 import PhoneMockup from './PhoneMockup';
 import LunchLogScreen from './PhoneScreens/LunchLogScreen';
-import { use3DTilt } from '../hooks/use3DTilt';
-
-function Interactive3DCard({ children, className = '', depthZ = 24 }) {
-  const { tiltStyle, shineStyle, handleMouseMove, handleMouseLeave } = use3DTilt(6, 1.02, depthZ);
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`relative preserve-3d cursor-pointer ${className}`}
-      style={tiltStyle}
-    >
-      <div className="absolute inset-0 pointer-events-none rounded-2xl z-40" style={shineStyle}></div>
-      {children}
-    </div>
-  );
-}
 
 export default function EffortlessLoggingSection() {
   const { scrollYProgress } = useScroll();
@@ -144,7 +127,7 @@ export default function EffortlessLoggingSection() {
         >
           {/* 1. VOICE */}
           <motion.div variants={itemVariants(0)}>
-            <Interactive3DCard className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-purple-100/90 text-purple-900 border border-purple-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <Mic className="w-3 h-3 text-purple-700" aria-hidden="true" />
                 <span>VOICE</span>
@@ -162,12 +145,12 @@ export default function EffortlessLoggingSection() {
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,16 Q30,16 60,0" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeDasharray="3 3" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
 
           {/* 2. PHOTO */}
           <motion.div variants={itemVariants(1)}>
-            <Interactive3DCard className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-purple-100/90 text-purple-900 border border-purple-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <Camera className="w-3 h-3 text-purple-700" aria-hidden="true" />
                 <span>PHOTO</span>
@@ -189,12 +172,12 @@ export default function EffortlessLoggingSection() {
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,16 Q30,16 60,10" fill="none" stroke="#A855F7" strokeWidth="1.5" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
 
           {/* 3. ORDER */}
           <motion.div variants={itemVariants(2)}>
-            <Interactive3DCard className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-cyan-100/90 text-cyan-900 border border-cyan-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <MessageSquare className="w-3 h-3 text-cyan-700" aria-hidden="true" />
                 <span>ORDER</span>
@@ -213,12 +196,12 @@ export default function EffortlessLoggingSection() {
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,16 Q30,16 60,20" fill="none" stroke="#38BDF8" strokeWidth="1.5" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
 
           {/* 4. TYPE */}
           <motion.div variants={itemVariants(3)}>
-            <Interactive3DCard className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-cyan-100/90 text-cyan-900 border border-cyan-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <Edit3 className="w-3 h-3 text-cyan-700" aria-hidden="true" />
                 <span>TYPE</span>
@@ -233,7 +216,7 @@ export default function EffortlessLoggingSection() {
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
                 <path d="M0,16 Q30,16 60,30" fill="none" stroke="#2DD4BF" strokeWidth="1.5" />
               </svg>
-            </Interactive3DCard>
+            </div>
           </motion.div>
         </motion.div>
 
