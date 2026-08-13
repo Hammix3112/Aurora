@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -7,8 +7,6 @@ import ResetStudioScreen from './PhoneScreens/ResetStudioScreen';
 import ResetPortalCanvas from './ResetPortalCanvas';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function ResetStudioSection() {
   const [activeTab, setActiveTab] = useState('Unwind');
@@ -55,12 +53,7 @@ export default function ResetStudioSection() {
         </svg>
       </div>
 
-      {/* Hero Three.js Shader Background Animation */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Suspense fallback={null}>
-          <BackgroundCanvas />
-        </Suspense>
-      </div>
+
 
       {/* Organic Expanding Concentric Portal Wave Canvas */}
       <ResetPortalCanvas activeTab={activeTab} />

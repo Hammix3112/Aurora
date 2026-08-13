@@ -118,5 +118,5 @@ export default function ResetPortalCanvas({ activeTab = 'Unwind' }) {
     };
   }, [activeTab]);
 
-  return <canvas ref={canvasRef} class="absolute inset-0 pointer-events-none w-full h-full z-0" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none w-full h-full z-0" />;
 }

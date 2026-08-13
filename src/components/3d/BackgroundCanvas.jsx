@@ -249,8 +249,8 @@ export default function BackgroundCanvas() {
     const auroraMats = [];
     const waveMats = [];
 
-    // Particle field
-    const countField = 11000;
+    // Particle field - Optimized from 11000 to 5500 for 50% lower vertex shader overhead
+    const countField = 5500;
     const posField = new Float32Array(countField * 3);
     const rndField = new Float32Array(countField * 3);
     const colField = new Float32Array(countField * 3);
@@ -401,7 +401,7 @@ export default function BackgroundCanvas() {
       if (rtBrightA) rtBrightA.dispose();
       if (rtBrightB) rtBrightB.dispose();
       if (rtBrightC) rtBrightC.dispose();
-      const dpr = renderer.getPixelRatio();
+      const dpr = Math.min(renderer.getPixelRatio(), 1.5);
       const fullW = Math.max(2, Math.floor(W * dpr));
       const fullH = Math.max(2, Math.floor(H * dpr));
       const halfW = Math.max(2, Math.floor(fullW / 2));
@@ -441,14 +441,6 @@ export default function BackgroundCanvas() {
       blurMat.uniforms.uDir.value.set(0, 1);
       fullscreenPass(blurMat, rtBrightC);
 
-      blurMat.uniforms.tDiffuse.value = rtBrightC.texture;
-      blurMat.uniforms.uDir.value.set(1, 0);
-      fullscreenPass(blurMat, rtBrightB);
-
-      blurMat.uniforms.tDiffuse.value = rtBrightB.texture;
-      blurMat.uniforms.uDir.value.set(0, 1);
-      fullscreenPass(blurMat, rtBrightC);
-
       compositeMat.uniforms.tScene.value = rtScene.texture;
       compositeMat.uniforms.tBloom.value = rtBrightC.texture;
       if (quadMesh) quadMesh.material = compositeMat;
@@ -468,11 +460,25 @@ export default function BackgroundCanvas() {
     window.addEventListener('resize', resize);
     resize();
 
+    // IntersectionObserver to pause rendering when offscreen
+    let isIntersecting = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    if (canvas) observer.observe(canvas);
+
     const clock = new THREE.Clock();
     let frameId = null;
 
     const animate = () => {
       frameId = requestAnimationFrame(animate);
+
+      // Skip render passes if off-screen or tab hidden
+      if (!isIntersecting || document.hidden) return;
+
       const t = clock.getElapsedTime();
 
       matStars.uniforms.uTime.value = t;
@@ -513,6 +519,7 @@ export default function BackgroundCanvas() {
 
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
+      observer.disconnect();
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('resize', resize);

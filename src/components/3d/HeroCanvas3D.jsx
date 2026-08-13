@@ -9,7 +9,7 @@ import EnergyTrails3D from './EnergyTrails3D';
 /**
  * CameraRig - Non-stop idle cinematic camera drift, mouse 3D parallax, and scroll Z push-in
  */
-function CameraRig({ mousePosition, scrollY }) {
+function CameraRig({ mousePosition, scrollYRef }) {
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
 
@@ -22,8 +22,8 @@ function CameraRig({ mousePosition, scrollY }) {
     const mouseX = mousePosition.current.x * 0.85;
     const mouseY = mousePosition.current.y * 0.55;
 
-    // 3. Scroll-Driven Z-Axis Push-In
-    const scrollZ = Math.min(2.0, (scrollY / 500) * 2.0);
+    // 3. Scroll-Driven Z-Axis Push-In (zero React re-render)
+    const scrollZ = Math.min(2.0, (scrollYRef.current / 500) * 2.0);
 
     // Compute Target Positions
     const targetX = idleX + mouseX;
@@ -75,7 +75,7 @@ function SceneLighting() {
  */
 export default function HeroCanvas3D() {
   const mousePosition = useRef({ x: 0, y: 0 });
-  const [scrollY, setScrollY] = useState(0);
+  const scrollYRef = useRef(0);
   const [rippleActive, setRippleActive] = useState(false);
   const [isLowPower, setIsLowPower] = useState(false);
   const rippleTimeoutRef = useRef(null);
@@ -104,7 +104,7 @@ export default function HeroCanvas3D() {
     };
 
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      scrollYRef.current = window.scrollY;
     };
 
     window.addEventListener('resize', checkPerformance, { passive: true });
@@ -133,7 +133,7 @@ export default function HeroCanvas3D() {
         }}
         className="w-full h-full"
       >
-        <CameraRig mousePosition={mousePosition} scrollY={scrollY} />
+        <CameraRig mousePosition={mousePosition} scrollYRef={scrollYRef} />
         <SceneLighting />
 
         {/* Energy Trails */}
