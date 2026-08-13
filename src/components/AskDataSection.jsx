@@ -1,22 +1,55 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Utensils, Footprints, Check } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PhoneMockup from './PhoneMockup';
 import ChatScreen from './PhoneScreens/ChatScreen';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function AskDataSection() {
+  const sectionRef = useRef(null);
+  const cardsRef = useRef([]);
+
   const { scrollYProgress } = useScroll();
 
   // Scroll-Driven Camera Zoom & 3D Phone Rotation
-  const cameraScale = useTransform(scrollYProgress, [0.35, 0.6], [1, 1.04]);
+  const cameraScale = useTransform(scrollYProgress, [0.35, 0.6], [1, 1.03]);
   const phoneRotateY = useTransform(scrollYProgress, [0.35, 0.6], [-3, 6]);
   const phoneY = useTransform(scrollYProgress, [0.35, 0.6], [15, -15]);
 
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
+
+    const cards = cardsRef.current.filter(Boolean);
+
+    gsap.fromTo(
+      cards,
+      { opacity: 0, x: 30, scale: 0.94 },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        stagger: 0.15,
+        duration: 0.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: 'top 65%',
+          toggleActions: 'play none none reverse',
+        },
+      }
+    );
+  }, []);
+
   return (
     <motion.section
+      ref={sectionRef}
       aria-label="Ask Your Data Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden gpu-accelerated preserve-3d z-10"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -34,13 +67,7 @@ export default function AskDataSection() {
         <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center preserve-3d">
           
           {/* Main Headline */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="sm:col-span-7 space-y-6 preserve-3d"
-          >
+          <div className="sm:col-span-7 space-y-6 preserve-3d">
             <p className="text-xs font-semibold tracking-[0.2em] text-purple-800 uppercase font-grotesk">
               ASK YOUR OWN DATA
             </p>
@@ -54,24 +81,13 @@ export default function AskDataSection() {
             <p className="text-slate-700 text-sm font-light leading-relaxed max-w-sm">
               Ask about a workout. Correct a meal. Understand a change. Aurora answers from the context you have built.
             </p>
-          </motion.div>
+          </div>
 
           {/* Floating Context Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="sm:col-span-5 space-y-6 select-none relative preserve-3d"
-          >
+          <div className="sm:col-span-5 space-y-6 select-none relative preserve-3d">
             {/* Top Context Card */}
-            <motion.div
-              animate={{
-                y: [-5, 5, -5],
-              }}
-              transition={{
-                y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
-              }}
+            <div
+              ref={(el) => (cardsRef.current[0] = el)}
               className="bg-white/90 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
@@ -102,16 +118,11 @@ export default function AskDataSection() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Bottom Context Card */}
-            <motion.div
-              animate={{
-                y: [5, -5, 5],
-              }}
-              transition={{
-                y: { duration: 5.0, repeat: Infinity, ease: 'easeInOut', delay: 0.5 },
-              }}
+            <div
+              ref={(el) => (cardsRef.current[1] = el)}
               className="bg-white/90 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-cyan-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
             >
               <div className="flex items-start gap-2.5">
@@ -125,25 +136,12 @@ export default function AskDataSection() {
                   <span className="text-[9px] text-slate-600 font-mono">11:32 AM</span>
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
 
-        {/* Right Side Container: Phone Mockup (col-span-5) */}
+        {/* Right Side Container: Phone Mockup */}
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          animate={{
-            y: [-6, 6, -6],
-            rotateZ: [-0.8, 0.8, -0.8],
-          }}
-          transition={{
-            opacity: { duration: 0.8, ease: 'easeOut' },
-            x: { duration: 0.8, ease: 'easeOut' },
-            y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
-            rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
-          }}
           style={{ rotateY: phoneRotateY, y: phoneY }}
           className="lg:col-span-5 flex justify-center lg:justify-end preserve-3d relative"
         >

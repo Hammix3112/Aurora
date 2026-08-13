@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { BookOpen, Clock, Heart, Footprints, Dumbbell, Moon, Utensils } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PhoneMockup from './PhoneMockup';
 import InsightsScreen from './PhoneScreens/InsightsScreen';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function HistorySection() {
+  const sectionRef = useRef(null);
+  const dayCardsRef = useRef([]);
+
   const { scrollYProgress } = useScroll();
 
   // Scroll-Driven Transformations for 3D Timeline Journey
-  const cameraScale = useTransform(scrollYProgress, [0.75, 0.95], [1, 1.04]);
+  const cameraScale = useTransform(scrollYProgress, [0.75, 0.95], [1, 1.03]);
   const phoneRotateY = useTransform(scrollYProgress, [0.75, 0.95], [-4, 8]);
   const phoneY = useTransform(scrollYProgress, [0.75, 0.95], [20, -15]);
-  const cardRotateX = useTransform(scrollYProgress, [0.75, 0.92], [6, 0]);
 
   const daysData = [
     { day: 'MON', date: '22', sleep: '7h 23m', rec: '62', recLabel: 'Fair', recColor: 'text-amber-600', steps: '8,219', workout: 'Strength', icon: Dumbbell },
@@ -23,10 +29,36 @@ export default function HistorySection() {
     { day: 'SUN', date: '28', sleep: '8h 16m', rec: '76', recLabel: 'Good', recColor: 'text-teal-600', steps: '10,843', workout: 'Rest', icon: Moon },
   ];
 
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
+
+    const cards = dayCardsRef.current.filter(Boolean);
+
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 25, scale: 0.95 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        stagger: 0.08,
+        duration: 0.6,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: 'top 65%',
+          toggleActions: 'play none none reverse',
+        },
+      }
+    );
+  }, []);
+
   return (
     <motion.section
+      ref={sectionRef}
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-20 overflow-hidden gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-20 overflow-hidden gpu-accelerated preserve-3d z-10"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -38,28 +70,11 @@ export default function HistorySection() {
       {/* Volumetric Soft Parchment Lighting Spot */}
       <div className="absolute left-1/2 top-1/3 -translate-x-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-amber-200/35 via-purple-100/30 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
 
-      {/* Decorative Dried Flower Accent Top Center with 3D Floating Motion */}
-      <motion.div
-        animate={{ y: [-4, 4, -4], rotateZ: [-3, 3, -3] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-6 left-1/2 -translate-x-1/2 opacity-40 pointer-events-none preserve-3d"
-      >
-        <svg className="w-16 h-16 text-amber-800/40" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-        </svg>
-      </motion.div>
-
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 preserve-3d">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-12 preserve-3d">
           
           {/* Left Column Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-6 space-y-6 preserve-3d"
-          >
+          <div className="lg:col-span-6 space-y-6 preserve-3d">
             <p className="text-xs font-semibold tracking-[0.2em] text-purple-700 uppercase font-grotesk">
               BUILT OVER TIME
             </p>
@@ -95,32 +110,13 @@ export default function HistorySection() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Right Column - Phone Mockup Suspended in 3D Space */}
+          {/* Right Column - Phone Mockup */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            animate={{
-              y: [-6, 6, -6],
-              rotateZ: [-0.8, 0.8, -0.8],
-            }}
-            transition={{
-              opacity: { duration: 0.8, ease: 'easeOut' },
-              scale: { duration: 0.8, ease: 'easeOut' },
-              y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
-              rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
-            }}
             style={{ rotateY: phoneRotateY, y: phoneY }}
             className="lg:col-span-6 flex justify-center lg:justify-end relative preserve-3d"
           >
-            {/* Handwritten style annotation note above phone */}
-            <div className="absolute -top-10 left-4 sm:left-12 max-w-[220px] text-purple-900 font-handwriting text-lg sm:text-xl leading-snug -rotate-3 z-20 pointer-events-none hidden sm:block preserve-3d" style={{ transform: 'translateZ(25px)' }}>
-              More sleep, earlier dinner and strength sessions align with higher recovery.
-              <span className="block text-2xl text-purple-500">⤵</span>
-            </div>
-
             {/* Backing Ambient Halo */}
             <div className="absolute -inset-6 bg-gradient-to-tr from-purple-300/30 via-amber-200/25 to-teal-200/25 rounded-[60px] blur-3xl pointer-events-none"></div>
 
@@ -131,14 +127,7 @@ export default function HistorySection() {
         </div>
 
         {/* Weekly Paper Timeline Log Breakdown Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          style={{ rotateX: cardRotateX }}
-          className="preserve-3d"
-        >
+        <div className="preserve-3d">
           <div className="parchment-card rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-x-auto border border-amber-200/90 transition-all duration-500">
             <div className="flex items-center justify-between border-b border-amber-900/10 pb-3 mb-4 text-xs font-grotesk">
               <span className="text-amber-900/60 font-semibold tracking-wider uppercase text-[10px]">APRIL</span>
@@ -146,10 +135,14 @@ export default function HistorySection() {
             </div>
 
             <div className="grid grid-cols-7 min-w-[700px] gap-2 divide-x divide-amber-900/10 preserve-3d">
-              {daysData.map((d) => {
+              {daysData.map((d, i) => {
                 const IconComp = d.icon;
                 return (
-                  <div key={d.date} className="px-2 text-center space-y-3 preserve-3d" style={{ transform: 'translateZ(10px)' }}>
+                  <div
+                    key={d.date}
+                    ref={(el) => (dayCardsRef.current[i] = el)}
+                    className="px-2 text-center space-y-3 preserve-3d"
+                  >
                     <div>
                       <span className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold block">{d.day}</span>
                       <span className="text-base font-bold text-slate-900 font-grotesk">{d.date}</span>
@@ -192,10 +185,10 @@ export default function HistorySection() {
               })}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Curved Bottom Wave Transition to Dark Section */}
+      {/* Curved Bottom Wave Transition */}
       <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
         <svg className="relative block w-full h-12 text-[#05070F]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,0 C150,90 350,-40 500,40 C650,120 900,10 1200,40 L1200,120 L0,120 Z" fill="currentColor"></path>

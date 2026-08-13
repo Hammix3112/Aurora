@@ -14,6 +14,8 @@ import ResetStudioSection from './components/ResetStudioSection';
 import HistorySection from './components/HistorySection';
 import FinalCtaSection from './components/FinalCtaSection';
 
+import CursorHalo from './components/CursorHalo';
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
@@ -57,6 +59,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full bg-[#050711] text-white selection:bg-[#D4F933] selection:text-black overflow-x-hidden perspective-1200 preserve-3d">
+      <CursorHalo />
       {/* Section 1: Hero Section */}
       <HeroSection />
 

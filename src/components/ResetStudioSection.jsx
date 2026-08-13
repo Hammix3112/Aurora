@@ -1,17 +1,22 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PhoneMockup from './PhoneMockup';
 import ResetStudioScreen from './PhoneScreens/ResetStudioScreen';
 import ResetPortalCanvas from './ResetPortalCanvas';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
 
 export default function ResetStudioSection() {
   const [activeTab, setActiveTab] = useState('Unwind');
+  const auraRef = useRef(null);
   const { scrollYProgress } = useScroll();
 
   // Slow Peaceful Scroll Transformations & Volumetric Lighting Reactions
-  const cameraScale = useTransform(scrollYProgress, [0.65, 0.9], [1, 1.04]);
+  const cameraScale = useTransform(scrollYProgress, [0.65, 0.9], [1, 1.03]);
   const glowOpacity = useTransform(scrollYProgress, [0.65, 0.9], [0.6, 1.0]);
   const phoneRotateY = useTransform(scrollYProgress, [0.65, 0.9], [-3, 5]);
 
@@ -21,10 +26,27 @@ export default function ResetStudioSection() {
     { name: 'Focus', icon: FocusSvg, activeColor: 'text-cyan-400', activeBorder: 'border-cyan-400/80 bg-cyan-950/60' },
   ];
 
+  useEffect(() => {
+    if (!auraRef.current) return;
+
+    const auraTween = gsap.to(auraRef.current, {
+      scale: 1.22,
+      opacity: 0.85,
+      duration: 4.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+    });
+
+    return () => {
+      auraTween.kill();
+    };
+  }, []);
+
   return (
     <motion.section
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d z-10"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -40,14 +62,15 @@ export default function ResetStudioSection() {
         </Suspense>
       </div>
 
-      {/* Organic Expanding Concentric Portal Wave Canvas (Preserved Hypnotic Breathwork Animation) */}
+      {/* Organic Expanding Concentric Portal Wave Canvas */}
       <ResetPortalCanvas activeTab={activeTab} />
 
       {/* Atmospheric Depth Fog Vignette */}
       <div className="absolute inset-0 bg-radial from-transparent via-[#04060E]/30 to-[#04060E] pointer-events-none z-[1]"></div>
 
-      {/* Radiant Volumetric Purple & Indigo Lighting Glow (Reacts to Scroll) */}
+      {/* Radiant Volumetric Purple & Indigo Lighting Glow with GSAP Breathing Aura */}
       <motion.div
+        ref={auraRef}
         style={{ opacity: glowOpacity }}
         className="absolute right-1/4 top-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-gradient-to-tr from-purple-600/35 via-indigo-600/25 to-cyan-500/15 rounded-full blur-[140px] pointer-events-none z-0"
       ></motion.div>
@@ -55,13 +78,7 @@ export default function ResetStudioSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center my-auto preserve-3d">
         
         {/* Left Column Content - Peaceful Entrance */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="lg:col-span-6 space-y-6 preserve-3d"
-        >
+        <div className="lg:col-span-6 space-y-6 preserve-3d">
           {/* Eyebrow */}
           <p className="text-xs font-semibold tracking-[0.2em] text-purple-400 uppercase font-grotesk">
             RESET STUDIO
@@ -113,27 +130,14 @@ export default function ResetStudioSection() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right Column - Phone Mockup Breathing Slowly in 3D Space */}
+        {/* Right Column - Phone Mockup */}
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          animate={{
-            scale: [1, 1.035, 1],
-            y: [-5, 5, -5],
-          }}
-          transition={{
-            opacity: { duration: 1.2, ease: 'easeOut' },
-            x: { duration: 1.2, ease: 'easeOut' },
-            scale: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
-            y: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-          }}
           style={{ rotateY: phoneRotateY }}
           className="lg:col-span-6 flex justify-center lg:justify-end preserve-3d relative"
         >
-          {/* Backing Volumetric Halo Breathing with Phone */}
+          {/* Backing Volumetric Halo */}
           <div className="absolute -inset-8 bg-gradient-to-tr from-purple-600/30 via-indigo-600/20 to-cyan-500/20 rounded-[60px] blur-3xl pointer-events-none"></div>
 
           <PhoneMockup time="16:00" battery="92%">
@@ -142,7 +146,7 @@ export default function ResetStudioSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition to Parchment Background */}
+      {/* Bottom Wavy Curve Transition */}
       <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
         <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0,50 C350,120 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
@@ -152,7 +156,6 @@ export default function ResetStudioSection() {
   );
 }
 
-/* SVG Icon Components */
 function WavesSvg({ isSelected }) {
   return (
     <svg className={`w-6 h-6 ${isSelected ? 'text-purple-300' : 'text-slate-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
