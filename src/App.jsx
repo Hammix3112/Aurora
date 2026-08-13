@@ -22,6 +22,10 @@ export default function App() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
+    // Configure GSAP ScrollTrigger defaults
+    ScrollTrigger.config({ ignoreMobileResize: true });
+    gsap.defaults({ ease: 'power2.out', duration: 0.8 });
+
     // Initialize Lenis Buttery Smooth Inertia Scroll
     const lenis = new Lenis({
       duration: 1.2,
@@ -32,15 +36,22 @@ export default function App() {
     // Synchronize Lenis with GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const updateLenis = (time) => {
       lenis.raf(time * 1000);
-    });
+    };
 
+    gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
+    // Refresh ScrollTrigger after DOM load
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 200);
+
     return () => {
+      clearTimeout(timer);
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(updateLenis);
     };
   }, []);
 

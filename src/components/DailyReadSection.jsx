@@ -1,51 +1,115 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Utensils, Moon, Heart, Footprints } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PhoneMockup from './PhoneMockup';
 import TodayCalorieScreen from './PhoneScreens/TodayCalorieScreen';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function DailyReadSection() {
+  const sectionRef = useRef(null);
+  const cardsRef = useRef([]);
+  const svgPathsRef = useRef([]);
+  const phoneContainerRef = useRef(null);
+
   const { scrollYProgress } = useScroll();
 
-  // Scroll-Driven 3D Transformations with Spring Dampening (Zero Jitter)
-  const cameraScale = useTransform(scrollYProgress, [0.1, 0.35], [1, 1.04]);
-  const rawRotateY = useTransform(scrollYProgress, [0.1, 0.35], [-4, 6]);
-  const rawPhoneY = useTransform(scrollYProgress, [0.1, 0.35], [20, -15]);
-  const bgGradientShift = useTransform(scrollYProgress, [0.1, 0.35], [0, 40]);
+  // Scroll-Driven 3D Transformations with Spring Dampening
+  const cameraScale = useTransform(scrollYProgress, [0.1, 0.35], [1, 1.03]);
+  const rawRotateY = useTransform(scrollYProgress, [0.1, 0.35], [-3, 5]);
+  const rawPhoneY = useTransform(scrollYProgress, [0.1, 0.35], [15, -10]);
 
   const phoneRotateY = useSpring(rawRotateY, { stiffness: 60, damping: 25, mass: 0.4 });
   const phoneY = useSpring(rawPhoneY, { stiffness: 60, damping: 25, mass: 0.4 });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
 
-  const cardVariants = (index) => ({
-    hidden: { opacity: 0, x: -40, z: -30 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      z: 0,
-      transition: {
-        duration: 0.7,
-        delay: index * 0.12,
-        ease: [0.22, 1, 0.36, 1],
+    const cards = cardsRef.current.filter(Boolean);
+    const svgPaths = svgPathsRef.current.filter(Boolean);
+
+    // Set initial GSAP states for smooth scrub waterfall
+    gsap.set(cards, {
+      opacity: 0,
+      y: 45,
+      rotateX: -12,
+      scale: 0.94,
+      transformOrigin: 'top center',
+    });
+
+    svgPaths.forEach((path) => {
+      const length = path.getTotalLength ? path.getTotalLength() : 100;
+      gsap.set(path, {
+        strokeDasharray: length,
+        strokeDashoffset: length,
+        opacity: 0.8,
+      });
+    });
+
+    // Create GSAP ScrollTrigger Timeline for Cards & Line Draw
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionEl,
+        start: 'top 75%',
+        end: 'bottom 40%',
+        scrub: 1.2,
       },
-    },
-  });
+    });
+
+    cards.forEach((card, i) => {
+      tl.to(
+        card,
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+        },
+        i * 0.25
+      );
+
+      if (svgPaths[i]) {
+        tl.to(
+          svgPaths[i],
+          {
+            strokeDashoffset: 0,
+            duration: 0.5,
+            ease: 'power2.inOut',
+          },
+          i * 0.25 + 0.2
+        );
+      }
+    });
+
+    // Subtle parallax float on Phone container
+    if (phoneContainerRef.current) {
+      gsap.to(phoneContainerRef.current, {
+        y: -25,
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.5,
+        },
+      });
+    }
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
 
   return (
     <motion.section
+      ref={sectionRef}
       aria-label="One Daily Read Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d gpu-accelerated"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d gpu-accelerated z-10"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -54,29 +118,13 @@ export default function DailyReadSection() {
         </svg>
       </div>
 
-      {/* Decorative Natural Plant Leaf Graphic with 3D Parallax Drift */}
-      <motion.div
-        style={{ y: bgGradientShift }}
-        className="absolute right-0 top-0 w-64 h-64 pointer-events-none opacity-30 preserve-3d"
-      >
-        <svg className="w-full h-full text-emerald-800" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
-          <path d="M50 0 C70 30 90 40 100 70 C80 90 50 100 20 80 C10 60 30 20 50 0 Z" opacity="0.4" />
-        </svg>
-      </motion.div>
-
       {/* Ambient Lighting Radial Spot */}
       <div className="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-amber-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 preserve-3d">
         
         {/* Left Column Content */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="lg:col-span-4 space-y-6 preserve-3d"
-        >
+        <div className="lg:col-span-4 space-y-6 preserve-3d">
           <p className="text-xs font-semibold tracking-[0.2em] text-purple-800 uppercase font-grotesk">
             ONE DAILY READ
           </p>
@@ -90,19 +138,14 @@ export default function DailyReadSection() {
           <p className="text-slate-700 text-sm sm:text-base font-light leading-relaxed max-w-sm">
             Your meals, sleep, recovery, movement and goals become one daily plan.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Center Column */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="lg:col-span-4 space-y-6 select-none relative preserve-3d"
-        >
+        {/* Center Column - GSAP Scrubbed Waterfall Cards */}
+        <div className="lg:col-span-4 space-y-6 select-none relative preserve-3d">
+          
           {/* Signal 1: BREAKFAST */}
-          <motion.div variants={cardVariants(0)}>
-            <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-2.5 px-3 rounded-2xl border border-purple-200/90 shadow-lg group hover:border-purple-400 transition-all duration-300">
+          <div ref={(el) => (cardsRef.current[0] = el)} className="preserve-3d">
+            <div className="relative flex items-center justify-between bg-white/95 backdrop-blur-md p-2.5 px-3 rounded-2xl border border-purple-200/90 shadow-lg group hover:border-purple-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
                   <Utensils className="w-4 h-4" aria-hidden="true" />
@@ -131,14 +174,20 @@ export default function DailyReadSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,20 Q40,20 80,0" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeDasharray="3 3" />
+                <path
+                  ref={(el) => (svgPathsRef.current[0] = el)}
+                  d="M0,20 Q40,20 80,0"
+                  fill="none"
+                  stroke="#C084FC"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
-          </motion.div>
+          </div>
 
           {/* Signal 2: SLEEP */}
-          <motion.div variants={cardVariants(1)}>
-            <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-purple-200/90 shadow-lg space-y-2 group hover:border-purple-400 transition-all duration-300">
+          <div ref={(el) => (cardsRef.current[1] = el)} className="preserve-3d">
+            <div className="relative bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-purple-200/90 shadow-lg space-y-2 group hover:border-purple-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
                   <Moon className="w-4 h-4" aria-hidden="true" />
@@ -165,14 +214,20 @@ export default function DailyReadSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,20 Q40,20 80,10" fill="none" stroke="#818CF8" strokeWidth="1.5" />
+                <path
+                  ref={(el) => (svgPathsRef.current[1] = el)}
+                  d="M0,20 Q40,20 80,10"
+                  fill="none"
+                  stroke="#818CF8"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
-          </motion.div>
+          </div>
 
           {/* Signal 3: RECOVERY */}
-          <motion.div variants={cardVariants(2)}>
-            <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-teal-200/90 shadow-lg space-y-1 group hover:border-teal-400 transition-all duration-300">
+          <div ref={(el) => (cardsRef.current[2] = el)} className="preserve-3d">
+            <div className="relative bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-teal-200/90 shadow-lg space-y-1 group hover:border-teal-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-teal-100 border border-teal-300 flex items-center justify-center text-teal-700 shrink-0">
                   <Heart className="w-4 h-4" aria-hidden="true" />
@@ -192,14 +247,20 @@ export default function DailyReadSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,20 Q40,20 80,20" fill="none" stroke="#2DD4BF" strokeWidth="1.5" />
+                <path
+                  ref={(el) => (svgPathsRef.current[2] = el)}
+                  d="M0,20 Q40,20 80,20"
+                  fill="none"
+                  stroke="#2DD4BF"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
-          </motion.div>
+          </div>
 
           {/* Signal 4: WORKOUT */}
-          <motion.div variants={cardVariants(3)}>
-            <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-cyan-200/90 shadow-lg space-y-1 group hover:border-cyan-400 transition-all duration-300">
+          <div ref={(el) => (cardsRef.current[3] = el)} className="preserve-3d">
+            <div className="relative bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-cyan-200/90 shadow-lg space-y-1 group hover:border-cyan-400 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0">
                   <Footprints className="w-4 h-4" aria-hidden="true" />
@@ -225,27 +286,25 @@ export default function DailyReadSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-20 h-10 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,20 Q40,20 80,30" fill="none" stroke="#38BDF8" strokeWidth="1.5" />
+                <path
+                  ref={(el) => (svgPathsRef.current[3] = el)}
+                  d="M0,20 Q40,20 80,30"
+                  fill="none"
+                  stroke="#38BDF8"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        {/* Right Column */}
+        {/* Right Column - Phone Showcase */}
         <motion.div
+          ref={phoneContainerRef}
           initial={{ opacity: 0, x: 50, scale: 0.95 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          animate={{
-            y: [-5, 5, -5],
-            rotateZ: [-0.8, 0.8, -0.8],
-          }}
-          transition={{
-            opacity: { duration: 0.8, ease: 'easeOut' },
-            x: { duration: 0.8, ease: 'easeOut' },
-            scale: { duration: 0.8, ease: 'easeOut' },
-            y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
-            rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
-          }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           style={{ rotateY: phoneRotateY, y: phoneY }}
           className="lg:col-span-4 flex justify-center lg:justify-end preserve-3d relative"
         >

@@ -1,49 +1,97 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Mic, Camera, MessageSquare, Edit3, CheckCheck } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PhoneMockup from './PhoneMockup';
 import LunchLogScreen from './PhoneScreens/LunchLogScreen';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function EffortlessLoggingSection() {
+  const sectionRef = useRef(null);
+  const itemsRef = useRef([]);
+  const svgPathsRef = useRef([]);
+
   const { scrollYProgress } = useScroll();
 
-  // Scroll-Driven 3D Transformations with Spring Dampening (Zero Jitter)
-  const cameraScale = useTransform(scrollYProgress, [0.2, 0.45], [1, 1.04]);
+  // Scroll-Driven 3D Transformations with Spring Dampening
+  const cameraScale = useTransform(scrollYProgress, [0.2, 0.45], [1, 1.03]);
   const rawRotateY = useTransform(scrollYProgress, [0.2, 0.45], [-3, 5]);
   const bowlRotate = useTransform(scrollYProgress, [0.2, 0.45], [0, 15]);
 
   const phoneRotateY = useSpring(rawRotateY, { stiffness: 60, damping: 25, mass: 0.4 });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
 
-  const itemVariants = (index) => ({
-    hidden: { opacity: 0, x: -35, z: -25 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      z: 0,
-      transition: {
-        duration: 0.7,
-        delay: index * 0.12,
-        ease: [0.22, 1, 0.36, 1],
+    const items = itemsRef.current.filter(Boolean);
+    const svgPaths = svgPathsRef.current.filter(Boolean);
+
+    // Initial GSAP states
+    gsap.set(items, {
+      opacity: 0,
+      x: -35,
+      scale: 0.95,
+    });
+
+    svgPaths.forEach((path) => {
+      const length = path.getTotalLength ? path.getTotalLength() : 100;
+      gsap.set(path, {
+        strokeDasharray: length,
+        strokeDashoffset: length,
+        opacity: 0.8,
+      });
+    });
+
+    // GSAP ScrollTrigger Timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionEl,
+        start: 'top 70%',
+        end: 'bottom 45%',
+        scrub: 1,
       },
-    },
-  });
+    });
+
+    items.forEach((item, i) => {
+      tl.to(
+        item,
+        {
+          opacity: 1,
+          x: 0,
+          scale: 1,
+          duration: 0.5,
+          ease: 'power3.out',
+        },
+        i * 0.2
+      );
+
+      if (svgPaths[i]) {
+        tl.to(
+          svgPaths[i],
+          {
+            strokeDashoffset: 0,
+            duration: 0.4,
+            ease: 'power2.inOut',
+          },
+          i * 0.2 + 0.15
+        );
+      }
+    });
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
 
   return (
     <motion.section
+      ref={sectionRef}
       aria-label="Effortless Food Logging Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d gpu-accelerated"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d gpu-accelerated z-10"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -55,21 +103,10 @@ export default function EffortlessLoggingSection() {
       {/* Soft Ambient Volumetric Lighting Spot */}
       <div className="absolute left-1/4 top-1/3 w-[550px] h-[550px] bg-gradient-to-tr from-amber-200/40 via-orange-100/30 to-purple-100/30 rounded-full blur-[130px] pointer-events-none"></div>
 
-      {/* Decorative Water Glass Accent */}
-      <div className="absolute left-1/3 top-6 w-32 h-32 pointer-events-none opacity-40 preserve-3d">
-        <div className="w-20 h-24 rounded-b-2xl border-2 border-slate-300/60 bg-white/30 backdrop-blur-sm shadow-sm rotate-6"></div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 preserve-3d">
         
         {/* Left Column Text Content */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="lg:col-span-5 space-y-6 preserve-3d"
-        >
+        <div className="lg:col-span-5 space-y-6 preserve-3d">
           {/* Eyebrow */}
           <p className="text-xs font-semibold tracking-[0.2em] text-purple-800 uppercase font-grotesk">
             EFFORTLESS FOOD LOGGING
@@ -91,16 +128,6 @@ export default function EffortlessLoggingSection() {
             <div className="absolute -inset-4 bg-gradient-to-tr from-amber-400/25 via-orange-300/20 to-purple-400/20 rounded-full blur-2xl pointer-events-none"></div>
 
             <motion.div
-              animate={{
-                y: [-7, 7, -7],
-                rotateZ: [-2, 2, -2],
-                scale: [1, 1.02, 1],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
               style={{ rotateZ: bowlRotate }}
               className="w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-white/90 transform transition-transform duration-500 hover:scale-105 preserve-3d cursor-pointer"
             >
@@ -115,19 +142,14 @@ export default function EffortlessLoggingSection() {
               />
             </motion.div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Middle Column */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="lg:col-span-3 space-y-5 select-none relative preserve-3d"
-        >
+        {/* Middle Column - GSAP Scrubbed Input Methods */}
+        <div className="lg:col-span-3 space-y-5 select-none relative preserve-3d">
+          
           {/* 1. VOICE */}
-          <motion.div variants={itemVariants(0)}>
-            <div className="flex items-center gap-3">
+          <div ref={(el) => (itemsRef.current[0] = el)} className="preserve-3d">
+            <div className="relative flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-purple-100/90 text-purple-900 border border-purple-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <Mic className="w-3 h-3 text-purple-700" aria-hidden="true" />
                 <span>VOICE</span>
@@ -143,14 +165,14 @@ export default function EffortlessLoggingSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,16 Q30,16 60,0" fill="none" stroke="#C084FC" strokeWidth="1.5" strokeDasharray="3 3" />
+                <path ref={(el) => (svgPathsRef.current[0] = el)} d="M0,16 Q30,16 60,0" fill="none" stroke="#C084FC" strokeWidth="2" />
               </svg>
             </div>
-          </motion.div>
+          </div>
 
           {/* 2. PHOTO */}
-          <motion.div variants={itemVariants(1)}>
-            <div className="flex items-center gap-3">
+          <div ref={(el) => (itemsRef.current[1] = el)} className="preserve-3d">
+            <div className="relative flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-purple-100/90 text-purple-900 border border-purple-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <Camera className="w-3 h-3 text-purple-700" aria-hidden="true" />
                 <span>PHOTO</span>
@@ -170,14 +192,14 @@ export default function EffortlessLoggingSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,16 Q30,16 60,10" fill="none" stroke="#A855F7" strokeWidth="1.5" />
+                <path ref={(el) => (svgPathsRef.current[1] = el)} d="M0,16 Q30,16 60,10" fill="none" stroke="#A855F7" strokeWidth="2" />
               </svg>
             </div>
-          </motion.div>
+          </div>
 
           {/* 3. ORDER */}
-          <motion.div variants={itemVariants(2)}>
-            <div className="flex items-center gap-3">
+          <div ref={(el) => (itemsRef.current[2] = el)} className="preserve-3d">
+            <div className="relative flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-cyan-100/90 text-cyan-900 border border-cyan-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <MessageSquare className="w-3 h-3 text-cyan-700" aria-hidden="true" />
                 <span>ORDER</span>
@@ -194,14 +216,14 @@ export default function EffortlessLoggingSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,16 Q30,16 60,20" fill="none" stroke="#38BDF8" strokeWidth="1.5" />
+                <path ref={(el) => (svgPathsRef.current[2] = el)} d="M0,16 Q30,16 60,20" fill="none" stroke="#38BDF8" strokeWidth="2" />
               </svg>
             </div>
-          </motion.div>
+          </div>
 
           {/* 4. TYPE */}
-          <motion.div variants={itemVariants(3)}>
-            <div className="flex items-center gap-3">
+          <div ref={(el) => (itemsRef.current[3] = el)} className="preserve-3d">
+            <div className="relative flex items-center gap-3">
               <div className="flex items-center gap-1.5 bg-cyan-100/90 text-cyan-900 border border-cyan-300 rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider font-grotesk shrink-0 shadow-sm">
                 <Edit3 className="w-3 h-3 text-cyan-700" aria-hidden="true" />
                 <span>TYPE</span>
@@ -214,27 +236,18 @@ export default function EffortlessLoggingSection() {
               </div>
 
               <svg className="absolute left-full top-1/2 w-16 h-8 -translate-y-1/2 pointer-events-none hidden lg:block overflow-visible" aria-hidden="true">
-                <path d="M0,16 Q30,16 60,30" fill="none" stroke="#2DD4BF" strokeWidth="1.5" />
+                <path ref={(el) => (svgPathsRef.current[3] = el)} d="M0,16 Q30,16 60,30" fill="none" stroke="#2DD4BF" strokeWidth="2" />
               </svg>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        {/* Right Column */}
+        {/* Right Column - Phone Showcase */}
         <motion.div
           initial={{ opacity: 0, x: 50, scale: 0.95 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          animate={{
-            y: [-6, 6, -6],
-            rotateZ: [-0.8, 0.8, -0.8],
-          }}
-          transition={{
-            opacity: { duration: 0.8, ease: 'easeOut' },
-            x: { duration: 0.8, ease: 'easeOut' },
-            scale: { duration: 0.8, ease: 'easeOut' },
-            y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
-            rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
-          }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           style={{ rotateY: phoneRotateY }}
           className="lg:col-span-4 flex justify-center lg:justify-end preserve-3d relative"
         >

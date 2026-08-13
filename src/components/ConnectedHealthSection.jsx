@@ -1,17 +1,22 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Moon, Heart, Activity, Dumbbell } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import PhoneMockup from './PhoneMockup';
 import ConnectedHealthScreen from './PhoneScreens/ConnectedHealthScreen';
 
-const BackgroundCanvas = lazy(() => import('./3d/BackgroundCanvas'));
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ConnectedHealthSection() {
   const [activeSignal, setActiveSignal] = useState('Sleep');
+  const sectionRef = useRef(null);
+  const signalButtonsRef = useRef([]);
+
   const { scrollYProgress } = useScroll();
 
-  // Scroll-Driven Cinematic Camera Zoom & 3D Phone Rotation with Spring Dampening
-  const cameraScale = useTransform(scrollYProgress, [0.25, 0.5], [1, 1.05]);
+  // Scroll-Driven Cinematic Camera Zoom & 3D Phone Rotation
+  const cameraScale = useTransform(scrollYProgress, [0.25, 0.5], [1, 1.04]);
   const rawRotateY = useTransform(scrollYProgress, [0.25, 0.5], [-4, 8]);
   const rawPhoneY = useTransform(scrollYProgress, [0.25, 0.5], [20, -15]);
 
@@ -26,11 +31,37 @@ export default function ConnectedHealthSection() {
     { name: 'Workouts', icon: Dumbbell, color: 'text-pink-400', border: 'border-pink-500/60', shadow: 'shadow-pink-500/30' },
   ];
 
+  useEffect(() => {
+    const sectionEl = sectionRef.current;
+    if (!sectionEl) return;
+
+    const btns = signalButtonsRef.current.filter(Boolean);
+
+    gsap.fromTo(
+      btns,
+      { opacity: 0, scale: 0.7, y: 20 },
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: 'back.out(1.5)',
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: 'top 65%',
+          toggleActions: 'play none none reverse',
+        },
+      }
+    );
+  }, []);
+
   return (
     <motion.section
+      ref={sectionRef}
       aria-label="Connected Health Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d"
+      className="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d z-10"
     >
       {/* Top Flowing Wave Curve Transition */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
@@ -39,26 +70,13 @@ export default function ConnectedHealthSection() {
         </svg>
       </div>
 
-      {/* Hero Three.js Shader Background Animation */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Suspense fallback={null}>
-          <BackgroundCanvas />
-        </Suspense>
-      </div>
-
       {/* Holographic Bloom Halo */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-l from-cyan-500/25 via-teal-500/20 to-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center preserve-3d">
         
         {/* Left Column Content */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="lg:col-span-6 space-y-8 preserve-3d"
-        >
+        <div className="lg:col-span-6 space-y-8 preserve-3d">
           <div className="space-y-4">
             <p className="text-xs font-semibold tracking-[0.2em] text-purple-400 uppercase font-grotesk">
               CONNECTED HEALTH
@@ -76,23 +94,18 @@ export default function ConnectedHealthSection() {
             </p>
           </div>
 
-          {/* Signal Icon Stack */}
+          {/* Signal Icon Stack with GSAP Stagger Reveal */}
           <div className="flex items-center gap-4 relative pt-2 preserve-3d">
             <div className="flex flex-row lg:flex-col gap-3">
               {signals.map((sig, idx) => {
                 const IconComp = sig.icon;
                 const isSelected = activeSignal === sig.name;
                 return (
-                  <motion.button
+                  <button
                     type="button"
                     key={sig.name}
+                    ref={(el) => (signalButtonsRef.current[idx] = el)}
                     aria-label={`Select ${sig.name} telemetry signal`}
-                    animate={{
-                      y: [-3, 3, -3],
-                    }}
-                    transition={{
-                      y: { duration: 3.8 + idx * 0.4, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.2 },
-                    }}
                     onClick={() => setActiveSignal(sig.name)}
                     className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 ${
                       isSelected
@@ -102,7 +115,7 @@ export default function ConnectedHealthSection() {
                     title={sig.name}
                   >
                     <IconComp className="w-4.5 h-4.5" aria-hidden="true" />
-                  </motion.button>
+                  </button>
                 );
               })}
             </div>
@@ -117,23 +130,13 @@ export default function ConnectedHealthSection() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Right Column */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          animate={{
-            y: [-6, 6, -6],
-            rotateZ: [-0.8, 0.8, -0.8],
-          }}
-          transition={{
-            opacity: { duration: 0.8, ease: 'easeOut' },
-            x: { duration: 0.8, ease: 'easeOut' },
-            y: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
-            rotateZ: { duration: 6.5, repeat: Infinity, ease: 'easeInOut' },
-          }}
           style={{ rotateY: phoneRotateY, y: phoneY }}
           className="lg:col-span-6 flex justify-center lg:justify-end preserve-3d relative"
         >
