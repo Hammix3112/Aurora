@@ -5,7 +5,8 @@ import * as THREE from 'three';
 
 /**
  * Pure 3D iPhone 15 Pro Showcase
- * - Front screen display perfectly aligned with user's exact health app image (mobile-screen.png)
+ * - Replaces the OLED display material on the actual phone mesh geometry
+ *   so the screen image fits perfectly with native rounded corners
  * - Stock wallpaper completely removed
  * - 360-degree interactive mouse/touch drag-to-rotate controls
  * - Real brushed titanium edges, volume buttons, and rear camera array
@@ -38,7 +39,7 @@ function ModelPhone({ mousePosition }) {
 
   // Clone scene and calculate native dimensions & scale factor
   const { clonedScene, normalizedScale, isLyingFlat } = useMemo(() => {
-    if (!scene) return { clonedScene: null, normalizedScale: 1, isLyingFlat: false };
+    if (!scene || !screenTexture) return { clonedScene: null, normalizedScale: 1, isLyingFlat: false };
 
     const clone = scene.clone(true);
     const box = new THREE.Box3().setFromObject(clone);
@@ -52,7 +53,7 @@ function ModelPhone({ mousePosition }) {
     const targetHeight = 5.8;
     const scaleFactor = maxDim > 0 ? targetHeight / maxDim : 1;
 
-    // Apply titanium & glass materials to GLTF meshes
+    // Apply materials to GLTF meshes
     clone.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
@@ -61,12 +62,28 @@ function ModelPhone({ mousePosition }) {
         const matName = child.material?.name || '';
         const meshName = child.name || '';
 
-        // Completely hide stock wallpaper mesh from Sketchfab
-        if (matName === 'hiVunnLeAHkwGEo' || meshName === 'IkoiNqATMVoZFKD') {
+        // ── KEY FIX: Replace the OLED display mesh's material with our screen texture ──
+        // Mesh 31 "xXDHkMplTIDAXLN" with material "pIJKfZsazmcpEiU" is the actual
+        // OLED display surface. It has the exact geometry of the phone's display area
+        // with proper rounded corners. We replace its material with our app screenshot.
+        if (matName === 'pIJKfZsazmcpEiU' || meshName === 'xXDHkMplTIDAXLN') {
+          child.material = new THREE.MeshBasicMaterial({
+            map: screenTexture,
+            side: THREE.DoubleSide,
+            toneMapped: false,
+          });
+          child.renderOrder = 100;
+        }
+        // Completely hide stock wallpaper mesh (small wallpaper texture overlay)
+        else if (matName === 'hiVunnLeAHkwGEo' || meshName === 'IkoiNqATMVoZFKD') {
           child.visible = false;
-        } else if (matName === 'jpGaQNgTtEGkTfo' || meshName === 'CfghdUoyzvwzIum') {
+        }
+        // Hide duplicate front glass that would block the screen
+        else if (matName === 'jpGaQNgTtEGkTfo' || meshName === 'CfghdUoyzvwzIum') {
           child.visible = false;
-        } else if (child.material) {
+        }
+        // Enhance titanium & other materials
+        else if (child.material) {
           child.material = child.material.clone();
           child.material.side = THREE.DoubleSide;
 
@@ -83,7 +100,7 @@ function ModelPhone({ mousePosition }) {
       normalizedScale: scaleFactor,
       isLyingFlat: lyingFlat,
     };
-  }, [scene]);
+  }, [scene, screenTexture]);
 
   // Pointer drag listeners for 360-degree rotation
   useEffect(() => {
@@ -177,28 +194,13 @@ function ModelPhone({ mousePosition }) {
 
       {/* Moveable 360-Degree Interactive Rotation Group */}
       <group ref={rotationGroupRef} rotation={[0.02, 0.0, 0]}>
-        {/* Centered 3D iPhone + Screen Surface Assembly */}
+        {/* Centered 3D Phone + Screen Surface Assembly */}
         <Center>
-          <group>
-            {/* Real 3D iPhone 15 Pro Chassis with Front Display Facing Forward */}
-            <group
-              scale={[normalizedScale, normalizedScale, normalizedScale]}
-              rotation={isLyingFlat ? [Math.PI / 2, 0, 0] : [0, Math.PI, 0]}
-            >
-              <primitive object={clonedScene} />
-            </group>
-
-            {/* Guaranteed Front OLED Display Mesh Mounted Directly on Front Bezel (Z: 0.24) */}
-            {screenTexture && (
-              <mesh position={[0, 0, 0.24]} rotation={[0, 0, 0]} renderOrder={100}>
-                <planeGeometry args={[2.50, 5.34]} />
-                <meshBasicMaterial
-                  map={screenTexture}
-                  side={THREE.DoubleSide}
-                  toneMapped={false}
-                />
-              </mesh>
-            )}
+          <group
+            scale={[normalizedScale, normalizedScale, normalizedScale]}
+            rotation={isLyingFlat ? [Math.PI / 2, 0, 0] : [0, Math.PI, 0]}
+          >
+            <primitive object={clonedScene} />
           </group>
         </Center>
       </group>
