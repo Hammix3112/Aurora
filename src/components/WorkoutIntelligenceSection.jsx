@@ -71,12 +71,6 @@ export default function WorkoutIntelligenceSection() {
       style={{ scale: cameraScale, perspective: '1200px' }}
       className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
 
       {/* Radiant Glowing Orbs behind Phone */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-l from-cyan-500/25 via-teal-500/18 to-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
@@ -106,9 +100,9 @@ export default function WorkoutIntelligenceSection() {
 
             {/* Heartbeat Line Graph Overlay with Live BPM Counter */}
             <div className="pt-2 space-y-2 select-none preserve-3d">
-              <div className="flex items-center gap-3">
+              <div className="dark-glass-card-3d depth-card-dark preserve-3d inline-flex items-center gap-3 p-2.5 px-3.5 rounded-2xl border border-purple-500/30">
                 <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" aria-hidden="true"></span>
-                <div>
+                <div style={{ transform: 'translateZ(8px)' }}>
                   <span className="text-[9px] uppercase tracking-widest font-semibold text-purple-300 font-grotesk block">
                     WORKOUT HEARTRATE
                   </span>
@@ -147,8 +141,8 @@ export default function WorkoutIntelligenceSection() {
           {/* Callout Cards Column */}
           <div className="sm:col-span-5 space-y-6 select-none relative preserve-3d">
             {/* Top Card */}
-            <div className="bg-slate-900/85 backdrop-blur-md border border-purple-500/30 rounded-2xl p-3 shadow-3d-deep relative group hover:border-purple-400 hover:shadow-purple-500/30 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer">
-              <div className="flex items-start gap-2.5">
+            <div className="dark-glass-card-3d depth-card-dark preserve-3d border border-purple-500/30 rounded-2xl p-3 shadow-3d-deep relative group hover:border-purple-400 hover:shadow-purple-500/30 transition-all duration-300 cursor-pointer">
+              <div className="flex items-start gap-2.5" style={{ transform: 'translateZ(10px)' }}>
                 <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center shrink-0 mt-0.5">
                   <Dumbbell className="w-3.5 h-3.5" aria-hidden="true" />
                 </div>
@@ -159,11 +153,13 @@ export default function WorkoutIntelligenceSection() {
             </div>
 
             {/* Bottom Card */}
-            <div className="bg-slate-900/85 backdrop-blur-md border border-purple-500/30 rounded-xl p-2 px-3 shadow-3d-deep inline-block relative group hover:border-cyan-400 hover:shadow-cyan-500/30 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer">
-              <span className="text-[8.5px] uppercase tracking-wider font-semibold text-slate-300 font-grotesk block">
-                Hardest interval
-              </span>
-              <span className="text-sm font-bold text-purple-300 font-mono">24:31</span>
+            <div className="dark-glass-card-3d depth-card-dark preserve-3d border border-purple-500/30 rounded-xl p-2.5 px-3.5 shadow-3d-deep inline-block relative group hover:border-cyan-400 hover:shadow-cyan-500/30 transition-all duration-300 cursor-pointer">
+              <div style={{ transform: 'translateZ(8px)' }}>
+                <span className="text-[8.5px] uppercase tracking-wider font-semibold text-slate-300 font-grotesk block">
+                  Hardest interval
+                </span>
+                <span className="text-sm font-bold text-purple-300 font-mono">24:31</span>
+              </div>
             </div>
           </div>
         </div>
@@ -181,12 +177,13 @@ export default function WorkoutIntelligenceSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,50 C350,120 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#F7F4EE]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
+
     </motion.section>
   );
 }

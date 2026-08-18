@@ -61,14 +61,8 @@ export default function ConnectedHealthSection() {
       ref={sectionRef}
       aria-label="Connected Health Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#060814] text-white py-24 overflow-hidden gpu-accelerated preserve-3d z-10"
+      className="relative w-full bg-[#060814] text-white py-28 overflow-hidden gpu-accelerated preserve-3d z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
 
       {/* Holographic Bloom Halo */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-l from-cyan-500/25 via-teal-500/20 to-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
@@ -107,20 +101,21 @@ export default function ConnectedHealthSection() {
                     ref={(el) => (signalButtonsRef.current[idx] = el)}
                     aria-label={`Select ${sig.name} telemetry signal`}
                     onClick={() => setActiveSignal(sig.name)}
-                    className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 ${
+                    style={{ transformStyle: 'preserve-3d' }}
+                    className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 dark-glass-card-3d depth-card-dark ${
                       isSelected
                         ? `bg-slate-900/90 ${sig.border} ${sig.color} scale-110 shadow-lg ${sig.shadow}`
                         : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                     }`}
                     title={sig.name}
                   >
-                    <IconComp className="w-4.5 h-4.5" aria-hidden="true" />
+                    <IconComp className="w-4.5 h-4.5" style={{ transform: 'translateZ(8px)' }} aria-hidden="true" />
                   </button>
                 );
               })}
             </div>
 
-            <div className="space-y-1 hidden lg:block">
+            <div className="dark-glass-card-3d px-4 py-2 rounded-xl space-y-1 hidden lg:block">
               <p className="text-xs text-slate-300 font-mono">
                 Connected via <span className="text-cyan-300 font-semibold">{activeSignal}</span> live telemetry
               </p>
@@ -148,19 +143,19 @@ export default function ConnectedHealthSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#F7F4EE]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
     </motion.section>
   );
 }
 
-function RunningIcon(props) {
+function RunningIcon({ className = "w-4 h-4 fill-current", style, ...props }) {
   return (
-    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+    <svg className={className} style={style} viewBox="0 0 24 24" aria-hidden="true" {...props}>
       <path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7.1 1.4z"/>
     </svg>
   );

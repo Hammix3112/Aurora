@@ -58,14 +58,8 @@ export default function HistorySection() {
     <motion.section
       ref={sectionRef}
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-20 overflow-hidden gpu-accelerated preserve-3d z-10"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-28 overflow-hidden gpu-accelerated preserve-3d z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#04060E]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
 
       {/* Volumetric Soft Parchment Lighting Spot */}
       <div className="absolute left-1/2 top-1/3 -translate-x-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-amber-200/35 via-purple-100/30 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
@@ -128,32 +122,32 @@ export default function HistorySection() {
 
         {/* Weekly Paper Timeline Log Breakdown Card */}
         <div className="preserve-3d">
-          <div className="parchment-card rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-x-auto border border-amber-200/90 transition-all duration-500">
+          <div className="parchment-card-3d depth-card preserve-3d rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-x-auto border border-amber-200/90 transition-all duration-500">
             <div className="flex items-center justify-between border-b border-amber-900/10 pb-3 mb-4 text-xs font-grotesk">
               <span className="text-amber-900/60 font-semibold tracking-wider uppercase text-[10px]">APRIL</span>
               <span className="text-purple-700 font-mono text-[10px] font-semibold">APR 22 — APR 28</span>
             </div>
 
-            <div className="grid grid-cols-7 min-w-[700px] gap-2 divide-x divide-amber-900/10 preserve-3d">
+            <div className="grid grid-cols-7 min-w-[700px] gap-2.5 preserve-3d">
               {daysData.map((d, i) => {
                 const IconComp = d.icon;
                 return (
                   <div
                     key={d.date}
                     ref={(el) => (dayCardsRef.current[i] = el)}
-                    className="px-2 text-center space-y-3 preserve-3d"
+                    className="parchment-card-3d depth-card preserve-3d p-2.5 rounded-xl text-center space-y-3 border border-amber-200/60 hover:border-purple-300 hover:shadow-md transition-all duration-300 cursor-pointer"
                   >
                     <div>
                       <span className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold block">{d.day}</span>
                       <span className="text-base font-bold text-slate-900 font-grotesk">{d.date}</span>
                     </div>
 
-                    <div className="flex items-center justify-center gap-1 text-[10px] text-amber-700 bg-amber-50/90 rounded-lg py-1 shadow-xs">
+                    <div className="flex items-center justify-center gap-1 text-[10px] text-amber-700 bg-amber-50/90 rounded-lg py-1 shadow-xs border border-amber-100/80" style={{ transform: 'translateZ(6px)' }}>
                       <Utensils className="w-3 h-3 text-amber-600" aria-hidden="true" />
                       <span>Meals</span>
                     </div>
 
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5" style={{ transform: 'translateZ(8px)' }}>
                       <div className="flex items-center justify-center gap-1 text-[10px] text-purple-700">
                         <Moon className="w-3 h-3 text-purple-600" aria-hidden="true" />
                         <span className="font-medium">{d.sleep}</span>
@@ -163,7 +157,7 @@ export default function HistorySection() {
                       </div>
                     </div>
 
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5" style={{ transform: 'translateZ(8px)' }}>
                       <div className="flex items-center justify-center gap-1 text-[10px]">
                         <Heart className={`w-3 h-3 ${d.recColor}`} aria-hidden="true" />
                         <span className="font-bold">{d.rec}</span>
@@ -171,12 +165,12 @@ export default function HistorySection() {
                       <span className={`text-[9px] block ${d.recColor}`}>{d.recLabel}</span>
                     </div>
 
-                    <div className="flex items-center justify-center gap-1 text-[10px] text-slate-700 font-mono">
+                    <div className="flex items-center justify-center gap-1 text-[10px] text-slate-700 font-mono" style={{ transform: 'translateZ(6px)' }}>
                       <Footprints className="w-3 h-3 text-teal-600" aria-hidden="true" />
                       <span>{d.steps}</span>
                     </div>
 
-                    <div className="inline-flex items-center gap-1 bg-purple-50 text-purple-800 text-[9px] px-2 py-0.5 rounded-full border border-purple-200 shadow-xs">
+                    <div className="inline-flex items-center gap-1 bg-purple-50 text-purple-800 text-[9px] px-2 py-0.5 rounded-full border border-purple-200 shadow-xs" style={{ transform: 'translateZ(10px)' }}>
                       <IconComp className="w-2.5 h-2.5" aria-hidden="true" />
                       <span>{d.workout}</span>
                     </div>
@@ -188,12 +182,13 @@ export default function HistorySection() {
         </div>
       </div>
 
-      {/* Curved Bottom Wave Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-12 text-[#05070F]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 C150,90 350,-40 500,40 C650,120 900,10 1200,40 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#05070F]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
+
     </motion.section>
   );
 }

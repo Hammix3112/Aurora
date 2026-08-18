@@ -140,6 +140,128 @@ section {
   transform: translateY(-3px) scale(1.02);
 }
 
+/* ═══ 3D Premium Card System ═══ */
+.depth-card {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.depth-card:hover {
+  transform: translateY(-4px) translateZ(8px);
+}
+
+/* Dark theme depth card */
+.depth-card-dark {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.depth-card-dark:hover {
+  transform: translateY(-4px) translateZ(8px);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(147, 51, 234, 0.15),
+    0 0 15px rgba(56, 189, 248, 0.1);
+}
+
+/* Continuous 3D floating animation */
+.float-3d {
+  animation: float3d 6s ease-in-out infinite;
+}
+
+@keyframes float3d {
+  0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+  25% { transform: translateY(-6px) rotateX(1deg) rotateY(-0.5deg); }
+  50% { transform: translateY(-3px) rotateX(-0.5deg) rotateY(1deg); }
+  75% { transform: translateY(-8px) rotateX(0.5deg) rotateY(-0.5deg); }
+}
+
+/* Scroll parallax layers */
+.parallax-slow {
+  will-change: transform;
+  transform: translateZ(-1px) scale(1.5);
+}
+
+.parallax-medium {
+  will-change: transform;
+  transform: translateZ(0px);
+}
+
+/* Glassmorphic Navbar */
+.glass-navbar {
+  background: rgba(5, 7, 15, 0.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.3s ease;
+}
+
+.glass-navbar-scrolled {
+  background: rgba(5, 7, 15, 0.85);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Section 3D transition effects */
+.section-3d-enter {
+  transform: translateZ(-30px) scale(0.98);
+  opacity: 0.8;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+}
+
+.section-3d-enter.visible {
+  transform: translateZ(0) scale(1);
+  opacity: 1;
+}
+
+/* Enhanced parchment card with 3D lift */
+.parchment-card-3d {
+  background: rgba(255, 253, 249, 0.95);
+  border: 1px solid rgba(220, 212, 195, 0.5);
+  box-shadow:
+    0 1px 2px rgba(70, 50, 20, 0.04),
+    0 4px 8px rgba(70, 50, 20, 0.06),
+    0 15px 35px -10px rgba(70, 50, 20, 0.1);
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+}
+
+.parchment-card-3d:hover {
+  box-shadow:
+    0 2px 4px rgba(70, 50, 20, 0.04),
+    0 8px 16px rgba(70, 50, 20, 0.08),
+    0 25px 50px -10px rgba(70, 50, 20, 0.15);
+  transform: translateY(-3px) translateZ(5px);
+}
+
+/* Dark glass card with 3D lift */
+.dark-glass-card-3d {
+  background: rgba(15, 20, 35, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(147, 51, 234, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, border-color 0.3s ease;
+}
+
+.dark-glass-card-3d:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(147, 51, 234, 0.12),
+    0 0 15px rgba(56, 189, 248, 0.08);
+  transform: translateY(-3px) translateZ(5px);
+}
+
 /* Mobile & Tablet Optimizations for 60FPS */
 @media (max-width: 768px) {
   section {

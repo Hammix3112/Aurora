@@ -91,14 +91,8 @@ export default function EffortlessLoggingSection() {
       ref={sectionRef}
       aria-label="Effortless Food Logging Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d gpu-accelerated z-10"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-28 overflow-hidden perspective-1200 preserve-3d gpu-accelerated z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
 
       {/* Soft Ambient Volumetric Lighting Spot */}
       <div className="absolute left-1/4 top-1/3 w-[550px] h-[550px] bg-gradient-to-tr from-amber-200/40 via-orange-100/30 to-purple-100/30 rounded-full blur-[130px] pointer-events-none"></div>
@@ -128,7 +122,7 @@ export default function EffortlessLoggingSection() {
             <div className="absolute -inset-4 bg-gradient-to-tr from-amber-400/25 via-orange-300/20 to-purple-400/20 rounded-full blur-2xl pointer-events-none"></div>
 
             <motion.div
-              style={{ rotateZ: bowlRotate }}
+              style={{ rotateZ: bowlRotate, transformStyle: 'preserve-3d' }}
               className="w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-white/90 transform transition-transform duration-500 hover:scale-105 preserve-3d cursor-pointer"
             >
               <img
@@ -139,6 +133,7 @@ export default function EffortlessLoggingSection() {
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover"
+                style={{ transform: 'translateZ(15px)' }}
               />
             </motion.div>
           </div>
@@ -155,7 +150,7 @@ export default function EffortlessLoggingSection() {
                 <span>VOICE</span>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-md border border-purple-200/90 rounded-2xl p-2.5 px-3 shadow-lg flex-1 text-center space-y-1 transition-all duration-300">
+              <div className="parchment-card-3d depth-card rounded-2xl p-2.5 px-3 shadow-lg flex-1 text-center space-y-1">
                 <div className="flex items-center justify-center gap-0.5 h-4">
                   {[30, 70, 40, 90, 60, 100, 50, 80, 30, 60, 40].map((h, i) => (
                     <div key={i} style={{ height: `${h}%` }} className="w-0.5 bg-purple-600 rounded-full"></div>
@@ -178,7 +173,7 @@ export default function EffortlessLoggingSection() {
                 <span>PHOTO</span>
               </div>
 
-              <div className="relative w-20 h-20 rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 transition-all duration-300">
+              <div className="parchment-card-3d depth-card relative w-20 h-20 rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0">
                 <img
                   src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=300&q=80"
                   alt="Meal photo scan"
@@ -205,7 +200,7 @@ export default function EffortlessLoggingSection() {
                 <span>ORDER</span>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-md border border-cyan-200/90 rounded-2xl p-2.5 px-3 shadow-lg flex-1 text-left transition-all duration-300">
+              <div className="parchment-card-3d depth-card rounded-2xl p-2.5 px-3 shadow-lg flex-1 text-left">
                 <p className="text-[9px] text-slate-900 leading-snug">
                   Grilled chicken bowl with rice, avocado, slaw, cucumber, spicy mayo
                 </p>
@@ -229,7 +224,7 @@ export default function EffortlessLoggingSection() {
                 <span>TYPE</span>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-md border border-cyan-200/90 rounded-2xl p-2.5 px-3 shadow-lg flex-1 text-left transition-all duration-300">
+              <div className="parchment-card-3d depth-card rounded-2xl p-2.5 px-3 shadow-lg flex-1 text-left">
                 <p className="text-[9px] text-slate-900 leading-snug">
                   Chicken bowl rice, salad, avocado, chilli mayo<span className="inline-block w-1 h-3 bg-cyan-600 ml-0.5 animate-pulse"></span>
                 </p>
@@ -259,10 +254,10 @@ export default function EffortlessLoggingSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-16 text-[#060814]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#060814]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
     </motion.section>

@@ -109,15 +109,8 @@ export default function DailyReadSection() {
       ref={sectionRef}
       aria-label="One Daily Read Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden perspective-1200 preserve-3d gpu-accelerated z-10"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-28 overflow-hidden perspective-1200 preserve-3d gpu-accelerated z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#030509]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
-
       {/* Ambient Lighting Radial Spot */}
       <div className="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-amber-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
 
@@ -145,9 +138,9 @@ export default function DailyReadSection() {
           
           {/* Signal 1: BREAKFAST */}
           <div ref={(el) => (cardsRef.current[0] = el)} className="preserve-3d">
-            <div className="relative flex items-center justify-between bg-white/95 backdrop-blur-md p-2.5 px-3 rounded-2xl border border-purple-200/90 shadow-lg group hover:border-purple-400 transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
+            <div className="parchment-card-3d depth-card relative flex items-center justify-between p-2.5 px-3 rounded-2xl border border-purple-200/90 shadow-lg group hover:border-purple-400 transition-all duration-300">
+              <div className="flex items-center gap-3" style={{ transform: 'translateZ(12px)' }}>
+                <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0 shadow-sm">
                   <Utensils className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div>
@@ -161,7 +154,7 @@ export default function DailyReadSection() {
                 </div>
               </div>
 
-              <div className="w-14 h-14 rounded-xl overflow-hidden shadow-md border border-amber-200 shrink-0 bg-amber-100 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-xl overflow-hidden shadow-md border border-amber-200 shrink-0 bg-amber-100 flex items-center justify-center" style={{ transform: 'translateZ(18px)' }}>
                 <img
                   src="https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=200&q=80"
                   alt="Breakfast Oatmeal Bowl"
@@ -187,9 +180,9 @@ export default function DailyReadSection() {
 
           {/* Signal 2: SLEEP */}
           <div ref={(el) => (cardsRef.current[1] = el)} className="preserve-3d">
-            <div className="relative bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-purple-200/90 shadow-lg space-y-2 group hover:border-purple-400 transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
+            <div className="parchment-card-3d depth-card relative p-3 rounded-2xl border border-purple-200/90 shadow-lg space-y-2 group hover:border-purple-400 transition-all duration-300">
+              <div className="flex items-center gap-3" style={{ transform: 'translateZ(12px)' }}>
+                <div className="w-9 h-9 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0 shadow-sm">
                   <Moon className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div>
@@ -203,7 +196,7 @@ export default function DailyReadSection() {
                 </div>
               </div>
 
-              <div className="flex items-end gap-1 h-6 pt-1 pl-12">
+              <div className="flex items-end gap-1 h-6 pt-1 pl-12" style={{ transform: 'translateZ(14px)' }}>
                 {[40, 60, 30, 80, 50, 90, 70, 40, 60, 85, 45, 75, 55, 95, 35].map((h, i) => (
                   <div
                     key={i}
@@ -227,9 +220,9 @@ export default function DailyReadSection() {
 
           {/* Signal 3: RECOVERY */}
           <div ref={(el) => (cardsRef.current[2] = el)} className="preserve-3d">
-            <div className="relative bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-teal-200/90 shadow-lg space-y-1 group hover:border-teal-400 transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-teal-100 border border-teal-300 flex items-center justify-center text-teal-700 shrink-0">
+            <div className="parchment-card-3d depth-card relative p-3 rounded-2xl border border-teal-200/90 shadow-lg space-y-1 group hover:border-teal-400 transition-all duration-300">
+              <div className="flex items-center gap-3" style={{ transform: 'translateZ(12px)' }}>
+                <div className="w-9 h-9 rounded-full bg-teal-100 border border-teal-300 flex items-center justify-center text-teal-700 shrink-0 shadow-sm">
                   <Heart className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div>
@@ -240,7 +233,7 @@ export default function DailyReadSection() {
                 </div>
               </div>
 
-              <div className="h-6 pl-12">
+              <div className="h-6 pl-12" style={{ transform: 'translateZ(14px)' }}>
                 <svg className="w-full h-full" viewBox="0 0 150 20" fill="none" aria-hidden="true">
                   <path d="M0,15 Q30,5 60,12 T120,3 T150,10" stroke="#0D9488" strokeWidth="2" fill="none" />
                 </svg>
@@ -260,9 +253,9 @@ export default function DailyReadSection() {
 
           {/* Signal 4: WORKOUT */}
           <div ref={(el) => (cardsRef.current[3] = el)} className="preserve-3d">
-            <div className="relative bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-cyan-200/90 shadow-lg space-y-1 group hover:border-cyan-400 transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0">
+            <div className="parchment-card-3d depth-card relative p-3 rounded-2xl border border-cyan-200/90 shadow-lg space-y-1 group hover:border-cyan-400 transition-all duration-300">
+              <div className="flex items-center gap-3" style={{ transform: 'translateZ(12px)' }}>
+                <div className="w-9 h-9 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0 shadow-sm">
                   <Footprints className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div>
@@ -276,7 +269,7 @@ export default function DailyReadSection() {
                 </div>
               </div>
 
-              <div className="h-6 pl-12">
+              <div className="h-6 pl-12" style={{ transform: 'translateZ(14px)' }}>
                 <svg className="w-full h-full" viewBox="0 0 150 20" fill="none" aria-hidden="true">
                   <path d="M0,18 L30,12 L60,16 L90,4 L120,14 L150,8" stroke="#0284C7" strokeWidth="2" fill="none" />
                   <circle cx="30" cy="12" r="2.5" fill="#0284C7" />
@@ -314,13 +307,6 @@ export default function DailyReadSection() {
             <TodayCalorieScreen />
           </PhoneMockup>
         </motion.div>
-      </div>
-
-      {/* Bottom Wavy Curve Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
-        </svg>
       </div>
     </motion.section>
   );

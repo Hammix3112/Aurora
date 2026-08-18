@@ -107,15 +107,11 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wave Transition into Light Section */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,40 C300,110 700,-20 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#F7F4EE]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
-
-        <div className="absolute bottom-3 left-12 text-[10px] uppercase tracking-[0.2em] font-semibold text-purple-700 font-grotesk">
-          INSIGHTS THAT ADD UP
-        </div>
       </div>
     </motion.section>
   );

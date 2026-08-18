@@ -46,12 +46,6 @@ export default function ResetStudioSection() {
       style={{ scale: cameraScale, perspective: '1200px' }}
       className="relative w-full bg-[#04060E] text-white py-28 overflow-hidden min-h-[750px] flex flex-col justify-center gpu-accelerated preserve-3d z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
 
 
 
@@ -90,7 +84,7 @@ export default function ResetStudioSection() {
           </p>
 
           {/* Mode Selection Row (Unwind | Sleep | Focus) */}
-          <div className="flex items-center gap-8 pt-8 preserve-3d">
+          <div className="flex items-center gap-6 pt-8 preserve-3d">
             {modes.map((mode, idx) => {
               const IconComp = mode.icon;
               const isSelected = activeTab === mode.name;
@@ -100,18 +94,24 @@ export default function ResetStudioSection() {
                   <button
                     type="button"
                     onClick={() => setActiveTab(mode.name)}
-                    className="flex flex-col items-center gap-3 group transition-all duration-300"
+                    className={`flex flex-col items-center gap-2.5 p-3 px-4 rounded-2xl group transition-all duration-300 dark-glass-card-3d depth-card-dark preserve-3d cursor-pointer ${
+                      isSelected
+                        ? 'border-purple-500/60 shadow-lg shadow-purple-950/60 scale-105'
+                        : 'hover:border-slate-700'
+                    }`}
                   >
                     <div
-                      className={`w-14 h-14 rounded-full flex items-center justify-center border transition-all duration-300 ${
+                      className={`w-12 h-12 rounded-full flex items-center justify-center border transition-all duration-300 ${
                         isSelected
-                          ? `${mode.activeBorder} shadow-lg shadow-purple-500/40 scale-105`
-                          : 'bg-slate-950/80 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                          ? `${mode.activeBorder} shadow-md shadow-purple-500/40`
+                          : 'bg-slate-950/80 border-slate-800/80 text-slate-400 group-hover:border-slate-600 group-hover:text-slate-200'
                       }`}
+                      style={{ transform: 'translateZ(10px)' }}
                     >
                       <IconComp isSelected={isSelected} />
                     </div>
                     <span
+                      style={{ transform: 'translateZ(8px)' }}
                       className={`text-xs font-grotesk transition-colors ${
                         isSelected ? `${mode.activeColor} font-semibold` : 'text-slate-400 group-hover:text-slate-200'
                       }`}
@@ -139,12 +139,13 @@ export default function ResetStudioSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-16 text-[#F7F4EE]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,50 C350,120 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#F7F4EE]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
+
     </motion.section>
   );
 }

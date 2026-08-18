@@ -49,14 +49,8 @@ export default function AskDataSection() {
       ref={sectionRef}
       aria-label="Ask Your Data Section"
       style={{ scale: cameraScale, perspective: '1200px' }}
-      className="relative w-full bg-[#F7F4EE] text-slate-900 py-24 overflow-hidden gpu-accelerated preserve-3d z-10"
+      className="relative w-full bg-[#F7F4EE] text-slate-900 py-28 overflow-hidden gpu-accelerated preserve-3d z-10"
     >
-      {/* Top Flowing Wave Curve Transition */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 -translate-y-1 pointer-events-none">
-        <svg className="relative block w-full h-14 text-[#060814]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,0 L1200,0 L1200,40 C900,110 500,-20 0,60 Z" fill="currentColor"></path>
-        </svg>
-      </div>
 
       {/* Volumetric Soft Ambient Parchment Lighting Spot */}
       <div className="absolute left-1/3 top-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 via-cyan-100/30 to-transparent rounded-full blur-[130px] pointer-events-none"></div>
@@ -88,9 +82,9 @@ export default function AskDataSection() {
             {/* Top Context Card */}
             <div
               ref={(el) => (cardsRef.current[0] = el)}
-              className="bg-white/90 backdrop-blur-md border border-purple-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
+              className="parchment-card-3d depth-card rounded-2xl p-3 shadow-lg relative group transition-all duration-300 preserve-3d cursor-pointer"
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-3" style={{ transform: 'translateZ(10px)' }}>
                 <div className="flex items-start gap-2.5">
                   <div className="w-7 h-7 rounded-full bg-purple-100 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0 mt-0.5">
                     <Utensils className="w-3.5 h-3.5" aria-hidden="true" />
@@ -123,9 +117,9 @@ export default function AskDataSection() {
             {/* Bottom Context Card */}
             <div
               ref={(el) => (cardsRef.current[1] = el)}
-              className="bg-white/90 backdrop-blur-md border border-cyan-200/80 rounded-2xl p-3 shadow-lg relative group hover:shadow-xl hover:border-cyan-400 hover:-translate-y-1 transition-all duration-300 preserve-3d cursor-pointer"
+              className="parchment-card-3d depth-card rounded-2xl p-3 shadow-lg relative group transition-all duration-300 preserve-3d cursor-pointer"
             >
-              <div className="flex items-start gap-2.5">
+              <div className="flex items-start gap-2.5" style={{ transform: 'translateZ(10px)' }}>
                 <div className="w-7 h-7 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center text-cyan-700 shrink-0 mt-0.5">
                   <Footprints className="w-3.5 h-3.5" aria-hidden="true" />
                 </div>
@@ -153,10 +147,10 @@ export default function AskDataSection() {
         </motion.div>
       </div>
 
-      {/* Bottom Wavy Curve Transition */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 translate-y-1">
-        <svg className="relative block w-full h-16 text-[#04060E]" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,40 C350,110 750,0 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+      {/* Organic Sweeping Dune Curve Transition */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none">
+        <svg className="relative block w-full h-20 sm:h-28 md:h-32 text-[#04060E]" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,50 C240,-10 520,80 900,95 C1150,105 1320,95 1440,90 L1440,120 L0,120 Z" fill="currentColor"></path>
         </svg>
       </div>
     </motion.section>
