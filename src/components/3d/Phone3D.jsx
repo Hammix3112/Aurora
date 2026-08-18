@@ -5,10 +5,10 @@ import * as THREE from 'three';
 
 /**
  * Pure 3D iPhone 15 Pro Showcase
- * - Front screen facing forward with Dynamic Island at top
- * - User's exact health app image (mobile-screen.png) right-side up on the front OLED display
- * - Triple camera module on the rear
+ * - Front screen display perfectly aligned with user's exact health app image (mobile-screen.png)
+ * - Stock wallpaper completely removed
  * - 360-degree interactive mouse/touch drag-to-rotate controls
+ * - Real brushed titanium edges, volume buttons, and rear camera array
  */
 function ModelPhone({ mousePosition }) {
   const phoneGroupRef = useRef();
@@ -31,7 +31,7 @@ function ModelPhone({ mousePosition }) {
       screenTexture.generateMipmaps = true;
       screenTexture.minFilter = THREE.LinearMipmapLinearFilter;
       screenTexture.magFilter = THREE.LinearFilter;
-      screenTexture.flipY = false;
+      screenTexture.flipY = true;
       screenTexture.needsUpdate = true;
     }
   }, [screenTexture]);
@@ -58,17 +58,19 @@ function ModelPhone({ mousePosition }) {
         child.castShadow = true;
         child.receiveShadow = true;
 
-        if (child.material) {
+        const matName = child.material?.name || '';
+        const meshName = child.name || '';
+
+        // Completely hide stock wallpaper mesh from Sketchfab
+        if (matName === 'hiVunnLeAHkwGEo' || meshName === 'IkoiNqATMVoZFKD') {
+          child.visible = false;
+        } else if (matName === 'jpGaQNgTtEGkTfo' || meshName === 'CfghdUoyzvwzIum') {
+          child.visible = false;
+        } else if (child.material) {
           child.material = child.material.clone();
           child.material.side = THREE.DoubleSide;
 
-          const matName = child.material.name || '';
-          // Hide stock wallpaper from Sketchfab
-          if (matName === 'hiVunnLeAHkwGEo' || matName === 'jpGaQNgTtEGkTfo') {
-            child.material.opacity = 0;
-            child.material.transparent = true;
-            child.material.depthWrite = false;
-          } else if (child.material.metalness !== undefined) {
+          if (child.material.metalness !== undefined) {
             child.material.metalness = Math.min(0.95, (child.material.metalness || 0.85) + 0.1);
             child.material.roughness = Math.max(0.18, (child.material.roughness || 0.3) * 0.8);
           }
@@ -168,10 +170,6 @@ function ModelPhone({ mousePosition }) {
 
   if (!clonedScene) return null;
 
-  // Screen plane size in Three.js scaled units
-  const planeWidth = 2.52;
-  const planeHeight = 5.42;
-
   return (
     <group ref={phoneGroupRef} position={[2.8, 0, 0]}>
       {/* Outer Subtle Ambient Glow */}
@@ -179,22 +177,24 @@ function ModelPhone({ mousePosition }) {
 
       {/* Moveable 360-Degree Interactive Rotation Group */}
       <group ref={rotationGroupRef} rotation={[0.02, 0.0, 0]}>
-        {/* Real 3D iPhone 15 Pro Chassis with Front Display Facing Forward */}
+        {/* Centered 3D iPhone + Screen Surface Assembly */}
         <Center>
-          <group
-            scale={[normalizedScale, normalizedScale, normalizedScale]}
-            rotation={isLyingFlat ? [-Math.PI / 2, 0, 0] : [0, 0, 0]}
-          >
-            {/* GLTF 3D Phone Model */}
-            <primitive object={clonedScene} />
+          <group>
+            {/* Real 3D iPhone 15 Pro Chassis with Front Display Facing Forward */}
+            <group
+              scale={[normalizedScale, normalizedScale, normalizedScale]}
+              rotation={isLyingFlat ? [Math.PI / 2, 0, 0] : [0, Math.PI, 0]}
+            >
+              <primitive object={clonedScene} />
+            </group>
 
-            {/* Right-Side-Up OLED Display Texture Mesh Placed Exactly on Front Display (Z: -0.15) */}
+            {/* Guaranteed Front OLED Display Mesh Mounted Directly on Front Bezel (Z: 0.24) */}
             {screenTexture && (
-              <mesh position={[0, 0, -0.15 / normalizedScale]} rotation={[0, Math.PI, 0]}>
-                <planeGeometry args={[planeWidth / normalizedScale, planeHeight / normalizedScale]} />
+              <mesh position={[0, 0, 0.24]} rotation={[0, 0, 0]} renderOrder={100}>
+                <planeGeometry args={[2.50, 5.34]} />
                 <meshBasicMaterial
                   map={screenTexture}
-                  side={THREE.FrontSide}
+                  side={THREE.DoubleSide}
                   toneMapped={false}
                 />
               </mesh>
