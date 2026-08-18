@@ -470,7 +470,7 @@ export default function BackgroundCanvas() {
     );
     if (canvas) observer.observe(canvas);
 
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
     let frameId = null;
 
     const animate = () => {
@@ -479,7 +479,7 @@ export default function BackgroundCanvas() {
       // Skip render passes if off-screen or tab hidden
       if (!isIntersecting || document.hidden) return;
 
-      const t = clock.getElapsedTime();
+      const t = (performance.now() - startTime) * 0.001;
 
       matStars.uniforms.uTime.value = t;
       matDust.uniforms.uTime.value = t;

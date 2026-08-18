@@ -19,10 +19,10 @@ function CameraRig({ mousePosition, scrollYRef }) {
     const idleZ = Math.sin(time * 0.2) * 0.1;
 
     // 2. Mouse Parallax Influence
-    const mouseX = mousePosition.current.x * 0.85;
-    const mouseY = mousePosition.current.y * 0.55;
+    const mouseX = (mousePosition.current?.x || 0) * 0.85;
+    const mouseY = (mousePosition.current?.y || 0) * 0.55;
 
-    // 3. Scroll-Driven Z-Axis Push-In (zero React re-render)
+    // 3. Scroll-Driven Z-Axis Push-In
     const scrollZ = Math.min(2.0, (scrollYRef.current / 500) * 2.0);
 
     // Compute Target Positions
@@ -36,8 +36,8 @@ function CameraRig({ mousePosition, scrollYRef }) {
     state.camera.position.z += (targetZ - state.camera.position.z) * 0.035;
 
     // Focus Target LookAt
-    const lookTargetX = mousePosition.current.x * 0.3;
-    const lookTargetY = mousePosition.current.y * 0.2;
+    const lookTargetX = (mousePosition.current?.x || 0) * 0.3;
+    const lookTargetY = (mousePosition.current?.y || 0) * 0.2;
     state.camera.lookAt(lookTargetX, lookTargetY, 0);
   });
 
@@ -45,26 +45,43 @@ function CameraRig({ mousePosition, scrollYRef }) {
 }
 
 /**
- * Refined Scene Lighting Architecture
+ * High-Performance Crash-Proof Studio Lighting (100% Local GPU, zero remote HDR fetch crashes)
  */
 function SceneLighting() {
   return (
     <group>
       <hemisphereLight
-        skyColor="#51E3DA"
-        groundColor="#050711"
-        intensity={0.6}
+        skyColor="#67E8F9"
+        groundColor="#0B0F19"
+        intensity={1.2}
       />
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={0.8} />
       <directionalLight
-        position={[4, 3, -2]}
-        color="#51E3DA"
-        intensity={2.5}
+        position={[6, 5, 4]}
+        color="#A5F3FC"
+        intensity={4.0}
       />
       <directionalLight
-        position={[-4, -2, -2]}
+        position={[-6, -4, -2]}
         color="#C084FC"
-        intensity={2.2}
+        intensity={3.5}
+      />
+      <directionalLight
+        position={[0, 6, 2]}
+        color="#FFFFFF"
+        intensity={2.8}
+      />
+      <pointLight
+        position={[3, 2, 4]}
+        color="#38BDF8"
+        intensity={2.5}
+        distance={14}
+      />
+      <pointLight
+        position={[-3, -2, 3]}
+        color="#C084FC"
+        intensity={2.5}
+        distance={14}
       />
     </group>
   );
@@ -125,11 +142,16 @@ export default function HeroCanvas3D() {
         camera={{ position: [0, 0, 10], fov: 45 }}
         dpr={[1, 1.5]}
         gl={{
-          antialias: false,
+          antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
-          stencil: false,
-          depth: true,
+          failIfMajorPerformanceCaveat: false,
+        }}
+        onCreated={({ gl }) => {
+          gl.domElement.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+            console.warn('WebGL context lost recovered.');
+          }, false);
         }}
         className="w-full h-full"
       >
@@ -142,7 +164,7 @@ export default function HeroCanvas3D() {
         {/* 3D Floating Information Widgets */}
         <Widgets3D />
 
-        {/* 3D Phone Centerpiece */}
+        {/* 3D iPhone Centerpiece */}
         <Phone3D mousePosition={mousePosition} rippleActive={rippleActive} />
 
         {/* High-Performance Post-Processing */}
@@ -150,16 +172,16 @@ export default function HeroCanvas3D() {
           <EffectComposer multisampling={0} disableNormalPass>
             <Bloom
               luminanceThreshold={0.88}
-              intensity={0.3}
+              intensity={0.25}
               mipmapBlur
             />
             <Vignette
               offset={0.35}
-              darkness={0.4}
+              darkness={0.35}
               blendFunction={BlendFunction.NORMAL}
             />
             <Noise
-              opacity={0.02}
+              opacity={0.015}
               blendFunction={BlendFunction.OVERLAY}
             />
           </EffectComposer>

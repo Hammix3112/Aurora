@@ -17,8 +17,8 @@ export default function EnergyTrails3D({ mousePosition, onPhoneRipple }) {
   const tube3Ref = useRef();
   const tube4Ref = useRef();
 
-  // Target phone screen contact point inside 3D world space
-  const phoneContact = useMemo(() => new THREE.Vector3(2.0, 0.0, 0.12), []);
+  // Target phone screen contact point inside 3D world space (left bezel of phone at X: 2.8)
+  const phoneContact = useMemo(() => new THREE.Vector3(2.1, 0.0, 0.15), []);
 
   // Pre-allocated Vector3 objects to prevent GC thrashing
   const tempVec = useMemo(() => new THREE.Vector3(), []);

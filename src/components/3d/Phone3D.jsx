@@ -1,146 +1,219 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo, useEffect, Suspense } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
-import TodayCalorieScreen from '../PhoneScreens/TodayCalorieScreen';
-import { Wifi, Signal, Battery } from 'lucide-react';
+import { useGLTF, useTexture, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
- * Hero Smartphone 3D Component calibrated for 100% exact visual size parity with PhoneMockup (320px x 620px)
+ * Pure 3D iPhone 15 Pro Showcase
+ * - Front screen facing forward with Dynamic Island at top
+ * - User's exact health app image (mobile-screen.png) right-side up on the front OLED display
+ * - Triple camera module on the rear
+ * - 360-degree interactive mouse/touch drag-to-rotate controls
  */
-export default function Phone3D({ mousePosition, rippleActive }) {
+function ModelPhone({ mousePosition }) {
   const phoneGroupRef = useRef();
-  const glassWaveRef = useRef();
-  const waveProgressRef = useRef(0);
+  const rotationGroupRef = useRef();
+
+  // Drag-to-rotate state (Front screen facing straight forward)
+  const isDragging = useRef(false);
+  const previousPointerPosition = useRef({ x: 0, y: 0 });
+  const dragRotation = useRef({ x: 0.02, y: 0.0 });
+  const dragVelocity = useRef({ x: 0, y: 0 });
+
+  // Load 3D GLTF Model & High-Resolution Mobile Screen Texture
+  const { scene } = useGLTF('/models/phone.glb');
+  const screenTexture = useTexture('/mobile-screen.png');
+
+  // Configure texture properties for razor-sharp OLED display
+  useEffect(() => {
+    if (screenTexture) {
+      screenTexture.colorSpace = THREE.SRGBColorSpace;
+      screenTexture.generateMipmaps = true;
+      screenTexture.minFilter = THREE.LinearMipmapLinearFilter;
+      screenTexture.magFilter = THREE.LinearFilter;
+      screenTexture.flipY = false;
+      screenTexture.needsUpdate = true;
+    }
+  }, [screenTexture]);
+
+  // Clone scene and calculate native dimensions & scale factor
+  const { clonedScene, normalizedScale, isLyingFlat } = useMemo(() => {
+    if (!scene) return { clonedScene: null, normalizedScale: 1, isLyingFlat: false };
+
+    const clone = scene.clone(true);
+    const box = new THREE.Box3().setFromObject(clone);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    const lyingFlat = size.z > size.y;
+    const maxDim = Math.max(size.x, size.y, size.z);
+
+    // Target height in Three.js units: ~5.8 units
+    const targetHeight = 5.8;
+    const scaleFactor = maxDim > 0 ? targetHeight / maxDim : 1;
+
+    // Apply titanium & glass materials to GLTF meshes
+    clone.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+
+        if (child.material) {
+          child.material = child.material.clone();
+          child.material.side = THREE.DoubleSide;
+
+          const matName = child.material.name || '';
+          // Hide stock wallpaper from Sketchfab
+          if (matName === 'hiVunnLeAHkwGEo' || matName === 'jpGaQNgTtEGkTfo') {
+            child.material.opacity = 0;
+            child.material.transparent = true;
+            child.material.depthWrite = false;
+          } else if (child.material.metalness !== undefined) {
+            child.material.metalness = Math.min(0.95, (child.material.metalness || 0.85) + 0.1);
+            child.material.roughness = Math.max(0.18, (child.material.roughness || 0.3) * 0.8);
+          }
+        }
+      }
+    });
+
+    return {
+      clonedScene: clone,
+      normalizedScale: scaleFactor,
+      isLyingFlat: lyingFlat,
+    };
+  }, [scene]);
+
+  // Pointer drag listeners for 360-degree rotation
+  useEffect(() => {
+    const handlePointerDown = (e) => {
+      if (e.clientX > window.innerWidth * 0.4) {
+        isDragging.current = true;
+        previousPointerPosition.current = { x: e.clientX, y: e.clientY };
+        dragVelocity.current = { x: 0, y: 0 };
+      }
+    };
+
+    const handlePointerMove = (e) => {
+      if (!isDragging.current) return;
+      const deltaX = e.clientX - previousPointerPosition.current.x;
+      const deltaY = e.clientY - previousPointerPosition.current.y;
+
+      const rotSpeed = 0.007;
+      dragRotation.current.y += deltaX * rotSpeed;
+      dragRotation.current.x += deltaY * rotSpeed;
+
+      // Clamp vertical tilt
+      dragRotation.current.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, dragRotation.current.x));
+
+      dragVelocity.current = {
+        x: deltaY * rotSpeed,
+        y: deltaX * rotSpeed,
+      };
+
+      previousPointerPosition.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handlePointerUp = () => {
+      isDragging.current = false;
+    };
+
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+
+    return () => {
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, []);
 
   useFrame((state) => {
-    if (!phoneGroupRef.current) return;
+    if (!phoneGroupRef.current || !rotationGroupRef.current) return;
     const time = state.clock.getElapsedTime();
 
-    // 1. Gentle organic breathing motion (Damped lerp to avoid scroll/frame jitter)
+    // Inertia & Damping when dragging ends
+    if (!isDragging.current) {
+      dragRotation.current.y += dragVelocity.current.y;
+      dragRotation.current.x += dragVelocity.current.x;
+
+      dragVelocity.current.x *= 0.92;
+      dragVelocity.current.y *= 0.92;
+
+      // Gentle idle floating when released
+      if (Math.abs(dragVelocity.current.y) < 0.001 && Math.abs(dragVelocity.current.x) < 0.001) {
+        const mouseParallaxX = (mousePosition?.current?.y || 0) * -0.10;
+        const mouseParallaxY = (mousePosition?.current?.x || 0) * 0.14;
+
+        const targetX = dragRotation.current.x + mouseParallaxX + Math.sin(time * 0.5) * 0.012;
+        const targetY = dragRotation.current.y + mouseParallaxY + Math.cos(time * 0.4) * 0.015;
+
+        rotationGroupRef.current.rotation.x += (targetX - rotationGroupRef.current.rotation.x) * 0.045;
+        rotationGroupRef.current.rotation.y += (targetY - rotationGroupRef.current.rotation.y) * 0.045;
+      } else {
+        rotationGroupRef.current.rotation.x = dragRotation.current.x;
+        rotationGroupRef.current.rotation.y = dragRotation.current.y;
+      }
+    } else {
+      rotationGroupRef.current.rotation.x = dragRotation.current.x;
+      rotationGroupRef.current.rotation.y = dragRotation.current.y;
+    }
+
+    // Organic floating breathing
     const breathY = Math.sin(time * 0.7) * 0.04;
     const breathX = Math.cos(time * 0.5) * 0.02;
-    const breathZ = Math.sin(time * 0.4) * 0.03;
-
-    // Controlled mouse rotation (Subtle inertia)
-    const mouseRotX = Math.min(0.05, Math.max(-0.05, (mousePosition?.current?.y || 0) * -0.04));
-    const mouseRotY = Math.min(0.05, Math.max(-0.05, (mousePosition?.current?.x || 0) * 0.04));
-
-    // Target rotation angles
-    const targetRotX = 0.04 + Math.sin(time * 0.4) * 0.01 + mouseRotX;
-    const targetRotY = -0.15 + Math.cos(time * 0.5) * 0.012 + mouseRotY;
-    const targetRotZ = Math.sin(time * 0.6) * 0.006;
-
-    // Buttery smooth lerp interpolation with 0.025 damping
-    phoneGroupRef.current.position.x += (3.1 + breathX - phoneGroupRef.current.position.x) * 0.025;
-    phoneGroupRef.current.position.y += (0.0 + breathY - phoneGroupRef.current.position.y) * 0.025;
-    phoneGroupRef.current.position.z += (0.0 + breathZ - phoneGroupRef.current.position.z) * 0.025;
-
-    phoneGroupRef.current.rotation.x += (targetRotX - phoneGroupRef.current.rotation.x) * 0.025;
-    phoneGroupRef.current.rotation.y += (targetRotY - phoneGroupRef.current.rotation.y) * 0.025;
-    phoneGroupRef.current.rotation.z += (targetRotZ - phoneGroupRef.current.rotation.z) * 0.025;
-
-    // 2. Pulse Glass Wave Reaction
-    if (glassWaveRef.current) {
-      if (rippleActive) {
-        waveProgressRef.current = 1.0;
-      }
-      if (waveProgressRef.current > 0.01) {
-        waveProgressRef.current *= 0.82;
-        glassWaveRef.current.material.opacity = waveProgressRef.current * 0.45;
-        glassWaveRef.current.scale.setScalar(1.0 + (1.0 - waveProgressRef.current) * 0.6);
-      } else {
-        glassWaveRef.current.material.opacity = 0;
-      }
-    }
+    phoneGroupRef.current.position.x += (2.8 + breathX - phoneGroupRef.current.position.x) * 0.045;
+    phoneGroupRef.current.position.y += (0.0 + breathY - phoneGroupRef.current.position.y) * 0.045;
   });
 
+  if (!clonedScene) return null;
+
+  // Screen plane size in Three.js scaled units
+  const planeWidth = 2.52;
+  const planeHeight = 5.42;
+
   return (
-    <group ref={phoneGroupRef} position={[3.1, 0, 0]} rotation={[0.04, -0.15, 0]}>
-      {/* Cyan Rim Light */}
-      <directionalLight position={[-3.5, 2.5, -1.0]} color="#51E3DA" intensity={3.2} />
+    <group ref={phoneGroupRef} position={[2.8, 0, 0]}>
+      {/* Outer Subtle Ambient Glow */}
+      <pointLight position={[0, 0, -1]} color="#C084FC" intensity={3.0} distance={6} />
 
-      {/* Purple Rim Light */}
-      <directionalLight position={[3.5, -2.5, -1.0]} color="#C084FC" intensity={2.8} />
+      {/* Moveable 360-Degree Interactive Rotation Group */}
+      <group ref={rotationGroupRef} rotation={[0.02, 0.0, 0]}>
+        {/* Real 3D iPhone 15 Pro Chassis with Front Display Facing Forward */}
+        <Center>
+          <group
+            scale={[normalizedScale, normalizedScale, normalizedScale]}
+            rotation={isLyingFlat ? [-Math.PI / 2, 0, 0] : [0, 0, 0]}
+          >
+            {/* GLTF 3D Phone Model */}
+            <primitive object={clonedScene} />
 
-      {/* Top Frame Highlight */}
-      <pointLight position={[0.0, 3.2, 1.8]} color="#FFFFFF" intensity={1.6} distance={8} />
-
-      {/* Pulse Wave Ring */}
-      <mesh ref={glassWaveRef} position={[0, 0, 0.114]}>
-        <ringGeometry args={[0.3, 0.9, 32]} />
-        <meshBasicMaterial color="#51E3DA" transparent opacity={0} blending={THREE.AdditiveBlending} />
-      </mesh>
-
-      {/* HTML Phone Mockup Component calibrated to distanceFactor=3.65 for exact 1-to-1 visual parity with PhoneMockup */}
-      <Html
-        transform
-        position={[0, 0, 0.12]}
-        distanceFactor={3.65}
-        className="select-none pointer-events-auto"
-      >
-        <div className="relative mx-auto w-[290px] sm:w-[320px] h-[580px] sm:h-[620px] select-none group transition-transform duration-300 hover:scale-[1.015]">
-          {/* Outer Volumetric Aurora Rim Light Halo */}
-          <div className="absolute -inset-5 bg-gradient-to-tr from-purple-600/30 via-cyan-400/25 to-teal-300/20 rounded-[56px] blur-2xl opacity-85 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-          {/* Phone Case Frame (#161B2E case matching lower section PhoneMockup with zero ground shadow) */}
-          <div className="relative w-full h-full bg-[#161B2E] p-2.5 rounded-[46px] border border-slate-700/80 flex flex-col justify-between overflow-hidden">
-            {/* Left Side Volume Buttons */}
-            <div className="absolute -left-[5px] top-24 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
-            <div className="absolute -left-[5px] top-36 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
-
-            {/* Right Side Power Button */}
-            <div className="absolute -right-[5px] top-28 w-[4px] h-14 bg-slate-700 rounded-r-md"></div>
-
-            {/* Dynamic Glass Specular Edge Reflection Highlights */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/8 to-transparent pointer-events-none z-40 rounded-[46px]"></div>
-            <div className="absolute inset-[1px] border border-white/10 rounded-[45px] pointer-events-none z-40"></div>
-
-            {/* Inner Screen Container */}
-            <div className="relative w-full h-full bg-[#080B18] rounded-[38px] overflow-hidden border border-slate-800 flex flex-col justify-between">
-              {/* Status Bar */}
-              <div className="bg-black/90 text-white px-5 pt-2 pb-1.5 flex items-center justify-between text-[11px] font-mono tracking-tighter shrink-0 z-30">
-                <span className="font-medium text-slate-200">02:14</span>
-
-                {/* Top Punch Hole Camera & Speaker */}
-                <div className="flex items-center gap-1.5">
-                  <div className="w-10 h-1 bg-slate-800 rounded-full"></div>
-                  <div className="w-2.5 h-2.5 bg-black border border-slate-800 rounded-full flex items-center justify-center">
-                    <div className="w-1 h-1 bg-indigo-900 rounded-full"></div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5 text-slate-300">
-                  <Signal className="w-3 h-3" aria-hidden="true" />
-                  <Wifi className="w-3 h-3" aria-hidden="true" />
-                  <span className="text-[9px] font-semibold text-teal-400">76%</span>
-                  <Battery className="w-3.5 h-3.5" aria-hidden="true" />
-                </div>
-              </div>
-
-              {/* Main Phone Content Screen */}
-              <div className="flex-1 overflow-hidden relative">
-                <TodayCalorieScreen />
-              </div>
-
-              {/* Android Navigation Bar */}
-              <div className="bg-black/95 py-1.5 px-8 flex items-center justify-between text-slate-500 shrink-0 z-30 border-t border-slate-900">
-                <button type="button" aria-label="Navigate Back" className="hover:text-white transition-colors">
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
-                  </svg>
-                </button>
-                <button type="button" aria-label="Navigate Home" className="hover:text-white transition-colors">
-                  <div className="w-3 h-3 rounded-full border-2 border-current"></div>
-                </button>
-                <button type="button" aria-label="Recent Applications" className="hover:text-white transition-colors">
-                  <div className="w-3 h-3 border-2 border-current rounded-sm"></div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Html>
+            {/* Right-Side-Up OLED Display Texture Mesh Placed Exactly on Front Display (Z: -0.15) */}
+            {screenTexture && (
+              <mesh position={[0, 0, -0.15 / normalizedScale]} rotation={[0, Math.PI, 0]}>
+                <planeGeometry args={[planeWidth / normalizedScale, planeHeight / normalizedScale]} />
+                <meshBasicMaterial
+                  map={screenTexture}
+                  side={THREE.FrontSide}
+                  toneMapped={false}
+                />
+              </mesh>
+            )}
+          </group>
+        </Center>
+      </group>
     </group>
+  );
+}
+
+// Preload assets
+useGLTF.preload('/models/phone.glb');
+useTexture.preload('/mobile-screen.png');
+
+export default function Phone3D(props) {
+  return (
+    <Suspense fallback={null}>
+      <ModelPhone {...props} />
+    </Suspense>
   );
 }
